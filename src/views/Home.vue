@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-   HelloWorld
+    <img class="logo" src="../assets/logo.png" alt="logo">
+    <h1>HelloWorld</h1>
   </div>
 </template>
 
@@ -14,3 +15,12 @@
   }
 
 </script>
+
+<style lang="scss" scoped>
+  .home {
+    .logo {
+      width: 300px;
+    }
+  }
+
+</style>
