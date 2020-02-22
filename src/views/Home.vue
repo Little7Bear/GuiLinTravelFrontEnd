@@ -8,7 +8,7 @@
           <el-menu-item index="/">热门游记</el-menu-item>
           <el-menu-item index="/scenic">景点</el-menu-item>
           <el-menu-item index="/my-home">我的首页</el-menu-item>
-        </template>
+        </el-menu>
       </div>
     </header>
   </div>
