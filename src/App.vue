@@ -17,15 +17,17 @@
     box-sizing: inherit;
   }
 
-  a,
-  a:link,
-  a:visited {
-    text-decoration: none;
-    color: #246bb3;
+  // element-链接
+  .el-link {
+    font-size: inherit;
+    user-select: none;
   }
 
-  a:hover {
-    text-decoration: underline;
+  // 导航
+  .el-menu {
+    .el-menu-item {
+      font-size: 18px;
+    }
   }
 
 </style>

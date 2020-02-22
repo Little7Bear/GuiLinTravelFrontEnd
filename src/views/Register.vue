@@ -1,20 +1,13 @@
 <template>
-  <div class="login">
-    <!-- logo -->
-    <div class="logo-container">
-      <img class="logo" src="../assets/logo.png" alt="logo">
-    </div>
-
-    <!-- 登录框 -->
-    <div class="box-container" v-show="isLogin">
+    <!-- 注册框 -->
+    <div class="box-container">
       <div class="header">
-        <h2 class="title">登录</h2>
-        <div class="hint">还没有帐号？<el-link type="primary" @click="isLogin = !isLogin">马上注册</el-link>
-        </div>
+        <h2 class="title">注册</h2>
+        <span class="hint">已经注册？<span class="link" @click="isLogin = !isLogin">马上登录</span></span>
       </div>
 
       <div class="body">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm1" label-width="100px">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm2" label-width="100px">
 
           <el-form-item label="用户名" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
@@ -24,62 +17,31 @@
             <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item>
-            <el-link type="primary" class="forget">忘记密码?</el-link>
-            <el-button class="btn" type="primary" @click="submitForm('ruleForm1')">登录</el-button>
-          </el-form-item>
-
-        </el-form>
-      </div>
-
-    </div>
-
-    <!-- 注册框 -->
-    <div class="box-container" v-show="!isLogin">
-      <div class="header">
-        <h2 class="title">注册</h2>
-        <div class="hint">已经注册？<el-link type="primary" class="link" @click="isLogin = !isLogin">马上登录</el-link>
-        </div>
-      </div>
-
-      <div class="body">
-        <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px">
-
-          <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm2.name"></el-input>
-          </el-form-item>
-
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
-          </el-form-item>
-
           <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
           </el-form-item>
 
-          <div class="r-hint">单击注册表示您同意我们的<el-link type="primary">服务条款</el-link>
-          </div>
           <el-form-item>
             <el-button class="btn" type="primary" @click="submitForm('ruleForm2')">注册</el-button>
           </el-form-item>
+
         </el-form>
       </div>
 
     </div>
-  </div>
 </template>
 
 <script>
   export default {
-    name: 'Login',
+    name: 'Register',
 
     data() {
       let validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
+          if (this.ruleForm.checkPass !== '') {
+            this.$refs.ruleForm.validateField('checkPass');
           }
           callback();
         }
@@ -87,7 +49,7 @@
       let validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
+        } else if (value !== this.ruleForm.pass) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -103,46 +65,22 @@
           checkPass: '',
         },
 
-        ruleForm2: {
-          name: '',
-          pass: '',
-          checkPass: '',
-        },
-
         rules: {
-          name: [{
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          }],
-          pass: [{
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          }]
-        },
-
-        rules2: {
           name: [{
               required: true,
               message: '请输入用户名',
               trigger: 'blur'
             },
             {
-              min: 1,
-              max: 10,
-              message: '长度在 1 到 10 个字符',
+              min: 3,
+              max: 5,
+              message: '长度在 3 到 5 个字符',
               trigger: 'blur'
             }
           ],
           pass: [{
             required: true,
             validator: validatePass,
-            trigger: 'blur'
-          }, {
-            min: 6,
-            max: 20,
-            message: '密码至少6位',
             trigger: 'blur'
           }],
           checkPass: [{
@@ -205,8 +143,6 @@
           right: 30px;
           font-size: 12px;
           color: #808080;
-          display: flex;
-          align-items: center;
         }
       }
 
@@ -222,24 +158,9 @@
         .btn {
           width: 373px;
         }
-
-        .forget {
-          float: right;
-          line-height: 1;
-          margin-bottom: 10px;
-          font-size: 12px;
-        }
-
-        .r-hint {
-          font-size: 13px;
-          margin-left: 100px;
-          height: 30px;
-          color: #909399;
-          display: flex;
-          align-items: center;
-        }
       }
     }
+
   }
 
 </style>
