@@ -1,0 +1,11 @@
+// 文本一行显示不全出省略号
+@mixin one-ellipsis {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// 网页边距
+@mixin body-padding {
+    padding: 0 50px;
+}

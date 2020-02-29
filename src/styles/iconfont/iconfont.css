@@ -1,0 +1,29 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1582974219467'); /* IE9 */
+  src: url('iconfont.eot?t=1582974219467#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAOsAAsAAAAACFQAAANeAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDHAqEFINcATYCJAMQCwoABCAFhG0HQxtJBxHVm63IfiaYJ9m7HD1U+iWWHCXxjQmeJ93q/UzCDsma2Klpqe7dVaLAiWlNAGxt2rGNilAsyXnqp/+R3xAupCvDC/T/55jpUjz/2uYSVVZNaxvtDTBLBxZRumvhFDoxu2Hsyos4DwFskilEGjdt3RmNiTFNABk9YtgAdEqHWRMraARXyVoTWYGFNhYaN4Hl/tfLV8pFg4GlMBa1H9pkMPU/BH7qrWb4Z7gI+ONZALYJFFAImCDDS20DUWGgEIWtDDapCmg0BozVU+9Tb78fCfYi0+a/PBAUBogLIzoQgEokVSfGt5kQ+FSPCQWfeuswINpUaBg6DLyG2MQEC8GIjQ00PiwhIW3AonXRYp+7n6y2P6gWcvZekrHlbmXg4DWT9lzBmHE1y1m8Frqtd4L2Xxc181r2YHvRuplJTlExM9Y42l86YNElb9dj3nSfr9tiT53rPsfj6bLjYWHkw4cXisV97cM67/TkeTxZaxfH7Pd1iznuy/B6uy7SL1uzKDr6mDch2X1Y/+nv3gzqF3Tz7lD/4gDoYs2OOtElsV9ilxPt3Je1582bLu7QTNoHV5j7cthlt8t4Jtx9OOywO/t02X34i9JPr7Ua3T+/b4oxbv7qwUZFr4Lc3J4FFUOM1K8l44Lzek+k1egn113N9rvxqpOMmyJ9XFkd+zUf6rlkNwpsZHvs6CHSPrO9JX3GTekkxW3zbnQfFjmsu7d9HuMB8FPbVYpPWe1SrvUCCOwdenh7v5Da/7VzyVVPZgx1oN3PpB//t/Fb8/8vv2WWqQoNvWnKIpunRZt0xoIXJbFNI/zVCITzYgxFVOtoEDRRMRgEkAQKTSbSxBaChUMluNDUA5sCmm12iGAiCjHdQD5zAQihHAeDYK6DIpRbSBP7HCyi+Q4uQkWBTVeJ2NMhW5V4acSoBC3oP0RDk7OMcglib+jfRXFS6ONeyEt0Q1s12fAVJ+QxFiwf34k4cEwjDOAyLIVgZkpopAoic1/XruyZKkPj6kIjRiVoAf0HoqHJufnlkvv8G/p3UVyTUWF9IS+xf6ClommBvMqmVhnXMnj5+A4Rhyc5phEYoAWLGSBgLh+V0EhF6OGbe2qUy7WVVfMrxifcBNgYA00xRIkpFrro1EaOOMmhqNAH7d7TrlYAAA==') format('woff2'),
+  url('iconfont.woff?t=1582974219467') format('woff'),
+  url('iconfont.ttf?t=1582974219467') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1582974219467#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-comment:before {
+  content: "\e60c";
+}
+
+.icon-loved:before {
+  content: "\e85c";
+}
+
+.icon-love:before {
+  content: "\e83f";
+}
+

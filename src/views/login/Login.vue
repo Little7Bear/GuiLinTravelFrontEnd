@@ -2,7 +2,7 @@
   <div class="login">
     <!-- logo -->
     <div class="logo-container">
-      <img class="logo" src="../assets/logo.png" alt="logo">
+      <img class="logo" src="@/assets/logo.png" alt="logo">
     </div>
 
     <!-- 登录框 -->

@@ -1,0 +1,30 @@
+{
+  "id": "1663778",
+  "name": "GuiLinTravelFrontEnd",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7192333",
+      "name": "评论",
+      "font_class": "-comment",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "8288959",
+      "name": "爱心",
+      "font_class": "-loved",
+      "unicode": "e85c",
+      "unicode_decimal": 59484
+    },
+    {
+      "icon_id": "8288820",
+      "name": "爱心",
+      "font_class": "-love",
+      "unicode": "e83f",
+      "unicode_decimal": 59455
+    }
+  ]
+}
