@@ -1,27 +1,27 @@
 <template>
   <div class='popular-travel'>
-    <TravelCard />
+    <TravelCard  v-for="(item, index) in cards" :key="index"/>
   </div>
 </template>
 
 <script>
-  import TravelCard from './TravelCard';
+import TravelCard from './TravelCard'
 
-  export default {
-    components: {
-      TravelCard
-    },
+export default {
+  components: {
+    TravelCard
+  },
 
-    data() {
-      return {
+  data () {
+    return {
+      cards: [20]
+    }
+  },
 
-      }
-    },
+  methods: {
 
-    methods: {
-
-    },
   }
+}
 
 </script>
 

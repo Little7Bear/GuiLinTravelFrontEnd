@@ -2,33 +2,31 @@
   <div class="travel-card">
     <el-card shadow="hover">
       <div class="img-container">
-        <el-image :src="imgUrl"></el-image>
+        <el-image :src="cover"></el-image>
         <div class="img-cover"></div>
       </div>
 
-
-
       <div class="card-footer">
         <div class="footer-left">
-          <h4 class="card-title">光脚走缅甸，见证虔诚的佛心虔诚的佛心</h4>
+          <h4 class="card-title">{{title}}</h4>
 
           <div class="user-container">
-            <el-avatar :size="25" :src="circleUrl"></el-avatar>
-            <span class="user-name">团子E菲</span>
-            <span class="date">2020.10.21</span>
+            <el-avatar :size="25" :src="avatar"></el-avatar>
+            <span class="user-name">{{name}}</span>
+            <span class="date">{{date}}</span>
 
           </div>
         </div>
 
         <div class="footer-right">
           <div class="icon-container">
-            <i class="iconfont  icon-love"></i>
-            <span class="icon-count">9999</span>
+            <i class="iconfont icon-loved"></i>
+            <span class="icon-count">{{loveCount}}</span>
           </div>
 
           <div class="icon-container">
-            <i class="iconfont  icon-comment"></i>
-            <span class="icon-count">5</span>
+            <i class="iconfont icon-comment"></i>
+            <span class="icon-count">{{commentCount}}</span>
           </div>
         </div>
       </div>
@@ -38,20 +36,34 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        currentDate: new Date(),
-        imgUrl: 'http://photos.breadtrip.com/photo_2020_02_01_27aabfecb6aa5c2bb0781d5f144b288c.jpg?imageView/2/w/960/q/85',
-        circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-      }
-    },
+export default {
+  data () {
+    return {
+      title: '光脚走缅甸，见证虔诚的佛心虔诚的佛心',
+      name: '团子E菲',
+      date: '2020-03-02',
+      cover: 'http://photos.breadtrip.com/photo_2020_02_01_27aabfecb6aa5c2bb0781d5f144b288c.jpg?imageView/2/w/960/q/85',
+      avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      loveCount: 9999,
+      commentCount: 536
+    }
   }
+}
 
 </script>
 
 <style lang='scss' scoped>
   /deep/ {
+    .el-card {
+      &:hover {
+        cursor: pointer;
+
+        .img-cover {
+          display: block;
+        }
+      }
+    }
+
     .el-card__body {
       padding: 0;
     }
@@ -69,12 +81,6 @@
     width: 100%;
     height: 156px;
     cursor: pointer;
-
-    &:hover {
-      .img-cover {
-        display: block;
-      }
-    }
 
     .img-cover {
       display: none;
@@ -132,9 +138,12 @@
 
           .iconfont {
             font-size: 18px;
-            cursor: pointer;
             margin-left: auto;
             margin-right: 5px;
+          }
+
+          .icon-loved {
+            color: red;
           }
 
           .icon-count {
