@@ -5,7 +5,10 @@
     text-overflow: ellipsis;
 }
 
-// 网页边距
-@mixin body-padding {
-    padding: 0 50px;
+//整体宽度
+@mixin body-width {
+    margin: 0 auto;
+    width: 90%;
+    min-width: 1000px;
+    max-width: 1300px;
 }

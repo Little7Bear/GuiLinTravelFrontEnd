@@ -1,12 +1,15 @@
+import Home from '@/views/Home';
+import PopularTravel from '@/views/popular-travel/PopularTravel';
+
 export default {
     path: '/',
     redirect: '/index',
     name: 'Home',
-    component: () => import('@/views/Home'),
+    component: Home,
     children: [{
         path: '/index',
         name: 'PopularTravel',
-        component: () => import('@/views/popular-travel/PopularTravel'),
+        component: PopularTravel,
     }, {
         path: '/scenic',
         name: 'Scenic',
