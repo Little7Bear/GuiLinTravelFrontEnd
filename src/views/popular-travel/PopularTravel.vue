@@ -14,33 +14,33 @@
         </div>
 
         <div class="card-container">
-            <TravelCard v-for="(item, index) in 18" :key="index" />
+            <TravelCard v-for="(item, index) in 20" :key="index" />
         </div>
     </div>
 </template>
 
 <script>
-import TravelCard from "./TravelCard";
+import TravelCard from './TravelCard'
 
 export default {
-    components: {
-        TravelCard
-    },
+  components: {
+    TravelCard
+  },
 
-    data() {
-        return {
-            cards: [20],
-            orders: ["热门", "最新"],
-            orderActive: 0
-        };
-    },
-
-    methods: {
-        toggleSort(index) {
-            this.orderActive = index;
-        }
+  data () {
+    return {
+      cards: [20],
+      orders: ['热门', '最新'],
+      orderActive: 0
     }
-};
+  },
+
+  methods: {
+    toggleSort (index) {
+      this.orderActive = index
+    }
+  }
+}
 </script>
 
 <style lang='scss' scoped>
