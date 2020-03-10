@@ -49,23 +49,23 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
 
 export default {
-    name: "Home",
+  name: 'Home',
 
-    components: {},
+  components: {},
 
-    data() {
-        return {
-            activeIndex: "/index",
-            searchVal: "",
-            year: dayjs().year()
-        };
-    },
+  data () {
+    return {
+      activeIndex: '/index',
+      searchVal: '',
+      year: dayjs().year()
+    }
+  },
 
-    methods: {}
-};
+  methods: {}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -122,7 +122,6 @@ $header-background: rgb(84, 92, 100);
     .header-container {
         @include body-width;
         display: flex;
-        // border: 1px solid #000;
     }
 
     .header-right {
