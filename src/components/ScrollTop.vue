@@ -8,72 +8,72 @@
 
 <script>
 export default {
-    data() {
-        return {
-            toTopShow: false,
-            scrollTop: 0
-        };
-    },
-
-    mounted() {
-        this.$nextTick(function() {
-            window.addEventListener(
-                "scroll",
-                _.debounce(this.handleScroll, 500)
-            );
-        });
-    },
-
-    methods: {
-        handleScroll() {
-            this.scrollTop = document.documentElement.scrollTop;
-            if (this.scrollTop > 300) {
-                this.toTopShow = true;
-            } else {
-                this.toTopShow = false;
-            }
-        },
-
-        scrollToTop() {
-            let timer = null;
-            let _this = this;
-            cancelAnimationFrame(timer);
-
-            timer = requestAnimationFrame(function fn() {
-                if (_this.scrollTop > 5000) {
-                    _this.scrollTop -= 1000;
-
-                    document.documentElement.scrollTop = _this.scrollTop;
-                    timer = requestAnimationFrame(fn);
-                } else if (_this.scrollTop > 1000 && _this.scrollTop <= 5000) {
-                    _this.scrollTop -= 500;
-                    document.documentElement.scrollTop = _this.scrollTop;
-                    timer = requestAnimationFrame(fn);
-                } else if (_this.scrollTop > 200 && _this.scrollTop <= 1000) {
-                    _this.scrollTop -= 100;
-                    document.documentElement.scrollTop = _this.scrollTop;
-                    timer = requestAnimationFrame(fn);
-                } else if (_this.scrollTop > 50 && _this.scrollTop <= 200) {
-                    _this.scrollTop -= 10;
-                    document.documentElement.scrollTop = _this.scrollTop;
-                    timer = requestAnimationFrame(fn);
-                } else if (_this.scrollTop > 0 && _this.scrollTop <= 50) {
-                    _this.scrollTop -= 5;
-                    document.documentElement.scrollTop = _this.scrollTop;
-                    timer = requestAnimationFrame(fn);
-                } else {
-                    cancelAnimationFrame(timer);
-                    _this.toTopShow = false;
-                }
-            });
-        }
+  data () {
+    return {
+      toTopShow: false,
+      scrollTop: 0
     }
-};
+  },
+
+  mounted () {
+    this.$nextTick(function () {
+      window.addEventListener(
+        'scroll',
+        this.$_debounce(this.handleScroll, 500)
+      )
+    })
+  },
+
+  methods: {
+    handleScroll () {
+      this.scrollTop = document.documentElement.scrollTop
+      if (this.scrollTop > 300) {
+        this.toTopShow = true
+      } else {
+        this.toTopShow = false
+      }
+    },
+
+    scrollToTop () {
+      let timer = null
+      const _this = this
+      cancelAnimationFrame(timer)
+
+      timer = requestAnimationFrame(function fn () {
+        if (_this.scrollTop > 5000) {
+          _this.scrollTop -= 1000
+
+          document.documentElement.scrollTop = _this.scrollTop
+          timer = requestAnimationFrame(fn)
+        } else if (_this.scrollTop > 1000 && _this.scrollTop <= 5000) {
+          _this.scrollTop -= 500
+          document.documentElement.scrollTop = _this.scrollTop
+          timer = requestAnimationFrame(fn)
+        } else if (_this.scrollTop > 200 && _this.scrollTop <= 1000) {
+          _this.scrollTop -= 100
+          document.documentElement.scrollTop = _this.scrollTop
+          timer = requestAnimationFrame(fn)
+        } else if (_this.scrollTop > 50 && _this.scrollTop <= 200) {
+          _this.scrollTop -= 10
+          document.documentElement.scrollTop = _this.scrollTop
+          timer = requestAnimationFrame(fn)
+        } else if (_this.scrollTop > 0 && _this.scrollTop <= 50) {
+          _this.scrollTop -= 5
+          document.documentElement.scrollTop = _this.scrollTop
+          timer = requestAnimationFrame(fn)
+        } else {
+          cancelAnimationFrame(timer)
+          _this.toTopShow = false
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped >
 .page-up {
-    background-color: #409eff;
+    background-color: $color-primary;
     position: fixed;
     right: 50px;
     bottom: 30px;

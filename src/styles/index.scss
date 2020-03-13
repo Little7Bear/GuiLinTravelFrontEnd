@@ -1,13 +1,20 @@
 html {
     box-sizing: border-box;
-    font-size: 14px;
-    color: #303133;
+    font-size: $font-size-base;
+    color: $color-text-regular;
 }
 
 *,
 *::before,
 *::after {
     box-sizing: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    color: $color-text-primary;
 }
 
 // element-链接
@@ -19,6 +26,6 @@ html {
 // element-导航
 .el-menu {
     .el-menu-item {
-        font-size: 18px;
+        font-size: $font-size-large;
     }
 }

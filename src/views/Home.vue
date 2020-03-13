@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <!-- 头部导航 -->
     <header class="header-wrapper">
       <div class="header-container">
         <el-menu :default-active="activeIndex" mode="horizontal" background-color="#545c64" text-color="#fff"
@@ -7,12 +8,7 @@
           <el-menu-item class="el-menu-title">
             <h1 class="title">桂林旅行网</h1>
           </el-menu-item>
-
-          <el-menu-item index="/index">热门游记</el-menu-item>
-
-          <el-menu-item index="/scenic">景点</el-menu-item>
-
-          <el-menu-item index="/my-home">我的首页</el-menu-item>
+          <el-menu-item v-for="(item, index) in urls" :key="index" :index="item.path">{{item.name}}</el-menu-item>
         </el-menu>
 
         <div class="header-right">
@@ -25,10 +21,12 @@
       </div>
     </header>
 
+    <!-- 中间路由 -->
     <main class="main">
       <router-view />
     </main>
 
+    <!-- 底部 -->
     <footer class="footer-wrapper">
       <div class="footer">
         <span class="copy-right">Copyright © {{year}} zhaobin</span>
@@ -46,7 +44,13 @@ export default {
 
   computed: {
     activeIndex () {
-      return this.$route.path
+      let path = this.urls[0].path
+      this.urls.forEach(item => {
+        if (item.path.includes(this.$route.path)) {
+          path = item.path
+        }
+      })
+      return path
     }
   },
 
@@ -57,7 +61,17 @@ export default {
   data () {
     return {
       searchVal: '',
-      year: ''
+      year: '',
+      urls: [{
+        path: '/index',
+        name: '热门游记'
+      }, {
+        path: '/scenic',
+        name: '景点'
+      }, {
+        path: '/my-home',
+        name: '我的首页'
+      }]
     }
   },
 
@@ -68,7 +82,7 @@ export default {
 
 <style lang="scss" scoped>
   $header-height: 66px;
-  $header-background: rgb(84, 92, 100);
+  $color-background: rgb(84, 92, 100);
 
   /deep/ {
     .el-menu.el-menu--horizontal {
@@ -95,7 +109,7 @@ export default {
       }
 
       &:hover {
-        background: $header-background !important;
+        background: $color-background !important;
       }
     }
 
@@ -114,7 +128,7 @@ export default {
 
     // 导航条
     .header-wrapper {
-      background: $header-background;
+      background: $color-background;
       height: $header-height;
     }
 
@@ -130,7 +144,7 @@ export default {
     }
 
     .header-text {
-      font-size: 20px;
+      font-size: $font-size-large;
       display: inline-block;
       width: 60px;
       color: #fff;
@@ -147,7 +161,7 @@ export default {
     //footer
 
     .footer-wrapper {
-      background-color: rgb(84, 92, 100);
+      background-color: $color-background;
     }
 
     .footer {
