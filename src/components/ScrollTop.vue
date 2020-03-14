@@ -19,7 +19,7 @@ export default {
     this.$nextTick(function () {
       window.addEventListener(
         'scroll',
-        this.$_debounce(this.handleScroll, 500)
+        this.$_.debounce(this.handleScroll, 500)
       )
     })
   },
