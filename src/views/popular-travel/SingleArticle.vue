@@ -7,6 +7,8 @@
       <!-- 标题 -->
       <div class="info">
         <h2 class="title">非典型性拉萨游</h2>
+        <span>巴尼拉斯科技</span>
+        <el-divider class="el-divider-title" direction="vertical"></el-divider>
         <span>2020.01.26</span>
         <el-divider class="el-divider-title" direction="vertical"></el-divider>
         <span>9天</span>
@@ -23,27 +25,63 @@
         <LikeCount :iconName="['icon-collected','icon-collect']" />
       </div>
     </div>
+
+    <!-- 内容 -->
+    <div class="body" ref="content">
+      <!-- 楼层效果 -->
+      <NavFloor />
+    </div>
   </div>
 </template>
 
 <script>
 import LikeCount from "./components/LikeCount";
+import NavFloor from "./components/NavFloor";
 
 export default {
   components: {
     LikeCount,
+    NavFloor,
   },
 
   data() {
     return {
+      scrollTop: 0,
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-
+      // 时间线
+      activities: [{
+        content: '活动按期开始',
+        timestamp: '2018-04-15'
+      }, {
+        content: '通过审核',
+        timestamp: '2018-04-13'
+      }, {
+        content: '创建成功',
+        timestamp: '2018-04-11'
+      }]
     };
   },
 
-  methods: {
+  mounted() {
+    this.$nextTick(function () {
+      console.log(this.$refs.content.offsetTop);
+      // 滑动时显示点赞栏
+      window.addEventListener(
+        'scroll',
+        this.$_.debounce(this.showLike, 200)
+      )
+    })
+  },
 
+  methods: {
+    // 显示点赞
+    showLike() {
+      this.scrollTop = document.documentElement.scrollTop
+      if (this.scrollTop > this.$refs.content.offsetTop) {
+        // console.log(1); todo 显示点赞
+      }
+    },
   }
 };
 </script>
@@ -51,12 +89,12 @@ export default {
 <style lang="scss" scoped>
 /deep/ {
   .el-divider-title {
-    margin: 0 20px;
+    margin: 0 10px;
   }
-}
 
-.single-article {
-  border: 1px solid #000;
+  .el-timeline {
+    padding-left: 35px;
+  }
 }
 
 .header {
@@ -77,7 +115,7 @@ export default {
   .count {
     user-select: none;
     padding: 13px;
-    margin-left: 200px;
+    margin-left: auto;
     border: 1px solid $border-color-lighter;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 
@@ -87,5 +125,10 @@ export default {
       cursor: pointer;
     }
   }
+}
+
+.body {
+  padding-top: 30px;
+  padding-left: 10px;
 }
 </style>

@@ -4,17 +4,36 @@ html {
     color: $color-text-regular;
 }
 
-*,
-*::before,
-*::after {
+body,
+div,
+p,
+ul,
+ol,
+li,
+nav,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     box-sizing: inherit;
+    margin: 0;
+    padding: 0;
 }
+
+ul,
+ol {
+    list-style: none;
+}
+
 
 h1,
 h2,
 h3,
-h4 {
-    margin: 0;
+h4,
+h5,
+h6 {
     color: $color-text-primary;
 }
 

@@ -1,10 +1,7 @@
 <template>
   <div class="travel-card" @click="goToArticle">
     <el-card shadow="hover">
-      <div class="img-container">
-        <el-image :src="cover"></el-image>
-        <div class="img-cover"></div>
-      </div>
+      <ImageCover :src="cover" class="image" />
 
       <div class="card-footer">
         <div class="footer-left">
@@ -38,7 +35,7 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       title: '光脚走缅甸，见证虔诚的佛心虔诚的佛心',
       name: '团子E菲',
@@ -53,7 +50,7 @@ export default {
   },
 
   methods: {
-    goToArticle () {
+    goToArticle() {
       console.log(1)
       this.$router.push({
         name: 'Article',
@@ -68,111 +65,90 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-  /deep/ {
-    .el-card {
-      // margin-right: 10px;
+/deep/ {
+  .el-card {
+    // margin-right: 10px;
 
-      &:hover {
-        cursor: pointer;
+    &:hover {
+      cursor: pointer;
 
-        .img-cover {
-          display: block;
+      .img-cover {
+        display: block;
+      }
+    }
+  }
+
+  .el-card__body {
+    padding: 0;
+  }
+}
+
+.image {
+  width: 100%;
+  height: 168px;
+}
+
+// 下方文字
+.travel-card {
+  width: 300px;
+
+  .card-footer {
+    padding: 10px;
+    display: flex;
+
+    .footer-left {
+      width: 210px;
+      border-right: 1px solid #dedede;
+
+      .card-title {
+        margin: 0;
+        @include one-ellipsis;
+      }
+
+      .user-container {
+        display: flex;
+        margin-top: 10px;
+        align-items: center;
+        font-size: $font-size-extra-small;
+        color: $color-text-secondary;
+
+        .user-name {
+          margin-left: 10px;
+        }
+
+        .date {
+          align-items: flex-end;
         }
       }
     }
 
-    .el-card__body {
-      padding: 0;
-    }
+    .footer-right {
+      .icon-container {
+        padding-left: 10px;
+        display: flex;
+        align-items: center;
 
-    .el-image {
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-  }
-
-  // 图片
-  .img-container {
-    position: relative;
-    width: 100%;
-    height: 156px;
-    cursor: pointer;
-
-    .img-cover {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba($color: #000, $alpha: 0.3);
-    }
-  }
-
-  // 下方文字
-  .travel-card {
-    width: 300px;
-
-    .card-footer {
-      padding: 10px;
-      display: flex;
-
-      .footer-left {
-        width: 210px;
-        border-right: 1px solid #dedede;
-
-        .card-title {
-          margin: 0;
-          @include one-ellipsis;
+        .iconfont {
+          font-size: 18px;
+          margin-left: auto;
+          margin-right: 5px;
         }
 
-        .user-container {
-          display: flex;
-          margin-top: 10px;
-          align-items: center;
+        .icon-loved {
+          color: red;
+        }
+
+        .icon-count {
+          width: 28px;
           font-size: $font-size-extra-small;
           color: $color-text-secondary;
-
-          .user-name {
-            margin-left: 10px;
-            // margin-right: 10px;
-          }
-
-          .date {
-            align-items: flex-end;
-          }
         }
-      }
 
-      .footer-right {
-        .icon-container {
-          padding-left: 10px;
-          display: flex;
-          align-items: center;
-
-          .iconfont {
-            font-size: 18px;
-            margin-left: auto;
-            margin-right: 5px;
-          }
-
-          .icon-loved {
-            color: red;
-          }
-
-          .icon-count {
-            width: 28px;
-            font-size: $font-size-extra-small;
-            color: $color-text-secondary;
-          }
-
-          &:last-of-type {
-            margin-top: 5px;
-          }
+        &:last-of-type {
+          margin-top: 5px;
         }
       }
     }
   }
-
+}
 </style>

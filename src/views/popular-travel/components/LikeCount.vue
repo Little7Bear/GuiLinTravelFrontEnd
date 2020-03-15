@@ -14,7 +14,6 @@ export default {
     },
     iconName: {
       type: Array,
-      required: true,
       default: () => {
         return ["icon-liked", "icon-like"];
       }
