@@ -2,23 +2,31 @@
   <div class="nav-floor">
     <!-- 左侧导航栏 -->
     <ol class="nav-side" ref="nav">
-      <li class="nav-item" v-for="(item, index) in list.length" :key="index">
+      <li class="nav-item" v-for="(item, index) in 10" :key="index">
         <!-- 文字 -->
-        <span class="nav-text" @click="choose(index)">第{{index+1}}天</span>
+        <span class="nav-text" @click="choose(index)">第{{ index + 1 }}天</span>
         <!-- 线条 -->
         <div class="item-tail"></div>
         <!-- 节点 -->
-        <div :class="['item-node', {active:current===index}]" @click="choose(index)"></div>
+        <div
+          :class="['item-node', { active: current === index }]"
+          @click="choose(index)"
+        ></div>
       </li>
     </ol>
 
     <!-- 右侧内容 -->
-    <ul class="floor-content" ref="content" id="d">
-      <li v-for="(item, index) in list" :key="index" v-show="index===current" class="content-item">
+    <ul class="floor-content" ref="content">
+      <li
+        v-for="(item, index) in list"
+        :key="index"
+        v-show="index === current"
+        class="content-item"
+      >
         <!-- 天气 -->
         <div class="weather">
           <i class="iconfont icon-sunshine"></i>
-          <span>{{item.date}}</span>
+          <span>{{ item.date }}</span>
         </div>
 
         <!-- 卡片 -->
@@ -27,7 +35,7 @@
           <ImageCover :src="card.cardImage" class="image" />
           <div style="padding: 14px;">
             <!-- 文字 -->
-            <p class="card-text">{{card.text}}</p>
+            <p class="card-text">{{ card.text }}</p>
             <!-- 时间等 -->
             <div class="bottom">
               <i class="iconfont icon-time"></i>
@@ -49,7 +57,7 @@ export default {
 
   },
 
-  data() {
+  data () {
     return {
       current: 0,
       scrollTop: 0,
@@ -61,13 +69,13 @@ export default {
               time: '2020-03-15 15:03:42',
               text: '今天布达拉宫开放的网络直播云旅游，而我无意也选择了这样一个特殊的时间去拉萨，好几个月前就订好了机票，准备春节来拉萨过个暖冬，晒晒太阳。可所有的计划都因为一个吃蝙蝠的人打乱了，但一切的经历也变得极为特殊而难忘。',
               location: '阳朔西街',
-              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_d2b2383b314a4e7c4f43671444f4daf4.jpg?imageView/2/w/960/q/85',
+              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_d2b2383b314a4e7c4f43671444f4daf4.jpg?imageView/2/w/960/q/85'
             }, {
               time: '2020-03-15 15:03:42',
               text: '下了飞机稍作休整，有轻微的高反但不严重，所以去八廓街转一圈，大昭寺下午来不及进去了。',
               location: '阳朔西街',
-              cardImage: 'http://photos.breadtrip.com/photo_2020_02_29_d3664550280659fa978d16f4b70c077f.jpg?imageView/2/w/960/q/85',
-            },
+              cardImage: 'http://photos.breadtrip.com/photo_2020_02_29_d3664550280659fa978d16f4b70c077f.jpg?imageView/2/w/960/q/85'
+            }
           ]
         },
         {
@@ -77,43 +85,46 @@ export default {
               time: '2020-03-15 15:03:42',
               text: '原来计划初一晚上到青海，然后坐火车沿路慢慢欣赏着大好河山进藏，但后来看疫情一天天严重起来，担心火车路上太久，空间又封闭，还是退了火车票改从青海飞到拉萨。但拉萨那时候还没出现病例，下了飞机测了体温，正常也就放我们出来了。',
               location: '阳朔西街',
-              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_3d748a3c7874087388a27e7ea05939b4.jpg?imageView/2/w/960/q/85',
+              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_3d748a3c7874087388a27e7ea05939b4.jpg?imageView/2/w/960/q/85'
             }, {
               time: '2020-03-15 15:03:42',
               text: '今天布达拉宫开放的网络直播云旅游，而我无意也选择了这样一个特殊的时间去拉萨，好几个月前就订好了机票，准备春节来拉萨过个暖冬，晒晒太阳。可所有的计划都因为一个吃蝙蝠的人打乱了，但一切的经历也变得极为特殊而难忘。',
               location: '阳朔西街',
-              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_d2b2383b314a4e7c4f43671444f4daf4.jpg?imageView/2/w/960/q/85',
-            },
+              cardImage: 'http://photos.breadtrip.com/photo_2020_03_01_d2b2383b314a4e7c4f43671444f4daf4.jpg?imageView/2/w/960/q/85'
+            }
           ]
-        },
+        }
       ]
     }
   },
 
-  mounted() {
+  mounted () {
     this.$nextTick(function () {
-      // 滑动时显示点赞栏
+      // 滚动固定
       window.addEventListener(
         'scroll',
-        this.fixed
+        this._fixed
       )
+      console.log(this.$refs.content.scrollTop)
     })
   },
 
   methods: {
-    choose(index) {
-      this.current = index;
+    choose (index) {
+      this.current = index
+      document.documentElement.scrollTop = 190
     },
 
-    fixed() {
+    _fixed () {
       this.scrollTop = document.documentElement.scrollTop
-      if (this.scrollTop > 166) {
-        this.$refs.nav.style.top = 0;
+      if (this.scrollTop > 186) {
+        this.$refs.nav.style.position = 'fixed'
+        this.$refs.nav.style.left = 'auto'
       } else {
-        this.$refs.nav.style.top = 200 + 'px';
+        this.$refs.nav.style.position = 'absolute'
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -157,14 +168,14 @@ export default {
 
 .nav-floor {
   position: relative;
-  display: flex;
 }
 
 // 导航
 .nav-side {
   display: inline-block;
-  position: fixed;
-  top: 200px;
+  position: absolute;
+  left: 0;
+  top: 0;
 
   .nav-item {
     position: relative;
@@ -212,8 +223,7 @@ export default {
 
 // 内容
 .floor-content {
-  flex: auto;
-  margin-left: 100px;
+  margin-left: 90px;
 
   // 天气
   .weather {
