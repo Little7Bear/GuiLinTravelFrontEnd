@@ -104,18 +104,19 @@ export default {
   .info {
     margin-left: 20px;
     color: $color-text-secondary;
-  }
+    width: 380px;
 
-  .title {
-    font-size: 30px;
-    font-weight: normal;
-    margin-bottom: 8px;
+    .title {
+      font-size: 30px;
+      font-weight: normal;
+      margin-bottom: 8px;
+    }
   }
 
   .count {
     user-select: none;
     padding: 13px;
-    margin-left: auto;
+    margin-left: 40px;
     border: 1px solid $border-color-lighter;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 
