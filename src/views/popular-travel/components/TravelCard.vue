@@ -35,7 +35,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       title: '光脚走缅甸，见证虔诚的佛心虔诚的佛心',
       name: '团子E菲',
@@ -50,8 +50,7 @@ export default {
   },
 
   methods: {
-    goToArticle() {
-      console.log(1)
+    goToArticle () {
       this.$router.push({
         name: 'Article',
         params: {

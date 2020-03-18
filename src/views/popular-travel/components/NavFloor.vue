@@ -103,27 +103,39 @@ export default {
       // 滚动固定
       window.addEventListener(
         'scroll',
-        this._fixed
+        this.handleScroll
       )
-      console.log(this.$refs.content.scrollTop)
     })
   },
 
   methods: {
     choose (index) {
       this.current = index
-      document.documentElement.scrollTop = 190
+      document.documentElement.scrollTop = 150
+      // if (window.pageYOffset) {
+      //   window.pageYOffset = 190
+      // } else if (document.documentElement.scrollTop) {
+      //   document.documentElement.scrollTop = 190
+      // } else {
+      //   document.body.scrollTop = 190
+      // }
     },
 
-    _fixed () {
-      this.scrollTop = document.documentElement.scrollTop
+    handleScroll () {
+      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (this.scrollTop > 186) {
         this.$refs.nav.style.position = 'fixed'
+        this.$refs.nav.style.top = '60px'
         this.$refs.nav.style.left = 'auto'
       } else {
         this.$refs.nav.style.position = 'absolute'
+        this.$refs.nav.style.top = 0
       }
     }
+  },
+
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll)
   }
 }
 </script>
