@@ -6,7 +6,7 @@
       <el-avatar :size="80" :src="circleUrl"></el-avatar>
       <!-- 标题 -->
       <div class="info">
-        <h2 class="title" style="">非典型性拉萨游</h2>
+        <h2 class="title" style>非典型性拉萨游</h2>
         <span>巴尼拉斯科技</span>
         <el-divider class="el-divider-title" direction="vertical"></el-divider>
         <span>2020.01.26</span>
@@ -28,11 +28,49 @@
 
     <!-- 内容 -->
     <div class="body" id="content">
-      <!-- 楼层效果 -->
-      <NavFloor />
+      <div class="body-content">
+        <!-- 楼层效果 -->
+        <NavFloor />
 
-      <!-- 线路日程 -->
-      <LineSchedule />
+        <!-- 线路日程 -->
+        <LineSchedule />
+      </div>
+    </div>
+    <div class="body-bottom">
+      <h4 class="comment-title-container">
+        <span class="comment-title">0</span>条评论
+      </h4>
+      <div class="comment-text-container">
+        <div class="avatar-row">
+          <el-avatar :size="30" :src="circleUrl"></el-avatar>
+          <span class="user-name">Mr.D_dfbf0：</span>
+          <span class="comment-text">加油</span>
+        </div>
+        <div class="comment-tooltip">
+          <span class="comment-date">8分钟前</span>
+
+          <el-link type="primary" :underline="false">删除</el-link>
+          <el-link type="primary" :underline="false">回复</el-link>
+        </div>
+      </div>
+      <el-divider></el-divider>
+      <div class="comment-text-container">
+        <div class="avatar-row">
+          <el-avatar :size="30" :src="circleUrl"></el-avatar>
+          <span class="user-name">Mr.D_dfbf0：</span>
+          <span class="comment-text">加油</span>
+        </div>
+        <div class="comment-tooltip">
+          <span class="comment-date">7分钟前</span>
+
+          <el-link type="primary" :underline="false">删除</el-link>
+          <el-link type="primary" :underline="false">回复</el-link>
+        </div>
+      </div>
+      <div class="comment-input-container">
+        <el-input type="textarea" :rows="4" placeholder="请输入评论" v-model="comment"></el-input>
+        <el-button type="primary" size="mini">提交</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -49,7 +87,7 @@ export default {
     LineSchedule
   },
 
-  data () {
+  data() {
     return {
       scrollTop: 0,
       circleUrl:
@@ -65,11 +103,12 @@ export default {
         content: '创建成功',
         timestamp: '2018-04-11'
       }],
-      isFixed: false
+      isFixed: false,
+      comment: '',
     }
   },
 
-  mounted () {
+  mounted() {
     this.$nextTick(function () {
       // 滑动时显示点赞栏
       window.addEventListener(
@@ -81,7 +120,7 @@ export default {
 
   methods: {
     // 显示点赞
-    handleScrollTop () {
+    handleScrollTop() {
       this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
       const offsetTop = document.querySelector('#content').offsetTop
@@ -94,7 +133,7 @@ export default {
     }
   },
 
-  destroyed () {
+  destroyed() {
     window.removeEventListener('scroll', this.handleScroll)
   }
 }
@@ -157,6 +196,77 @@ export default {
 .body {
   padding-top: 30px;
   padding-left: 10px;
+}
+
+.body-content {
   display: flex;
+}
+
+.body-bottom {
+  width: 568px;
+  margin-left: 100px;
+  font-size: 13px;
+  padding-bottom: 20px;
+
+  .comment-title-container {
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: normal;
+    padding-bottom: 8px;
+    border-bottom: 1px solid $border-color-base;
+  }
+
+  .comment-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: $color-primary;
+    margin-right: 5px;
+  }
+
+  .comment-text-container {
+    margin-top: 10px;
+    padding-left: 10px;
+  }
+
+  .avatar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .user-name {
+    margin-left: 5px;
+    color: $color-primary;
+  }
+
+  .comment-tooltip {
+    display: flex;
+
+    .el-link:first-of-type {
+      margin-left: auto;
+      margin-right: 20px;
+    }
+  }
+
+  .comment-date {
+    margin-left: 35px;
+    color: $color-text-secondary;
+    font-size: 12px;
+  }
+
+  .el-divider {
+    margin: 0 auto;
+    width: 95%;
+    margin-top: 10px;
+  }
+
+  .comment-input-container {
+    margin-top: 30px;
+    text-align: right;
+
+    .el-button {
+      margin-top: 10px;
+    }
+  }
 }
 </style>
