@@ -6,21 +6,31 @@ export default {
   redirect: '/index',
   name: 'Home',
   component: Home,
-  children: [{
-    path: '/index',
-    name: 'PopularTravel',
-    component: PopularTravel
-  }, {
-    path: '/index/article',
-    name: 'Article',
-    component: () => import('@/views/popular-travel/SingleArticle')
-  }, {
-    path: '/scenic',
-    name: 'Scenic',
-    component: () => import('@/views/scenic/Scenic')
-  }, {
-    path: '/my-home',
-    name: 'MyHome',
-    component: () => import('@/views/my-home/MyHome')
-  }]
+  children: [
+    {
+      path: '/index',
+      name: 'PopularTravel',
+      component: PopularTravel
+    },
+    {
+      path: '/index/article',
+      name: 'Article',
+      component: () => import('@/views/popular-travel/SingleArticle')
+    },
+    {
+      path: '/scenic',
+      name: 'Scenic',
+      component: () => import('@/views/scenic/Scenic')
+    },
+    {
+      path: '/my-home',
+      name: 'MyHome',
+      component: () => import('@/views/my-home/MyHome')
+    },
+    {
+      path: '/create-travel',
+      name: 'CreateTravel',
+      component: () => import('@/views/my-home/CreateTravel')
+    },
+  ]
 }

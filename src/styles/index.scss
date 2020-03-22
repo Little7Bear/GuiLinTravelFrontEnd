@@ -54,4 +54,13 @@ h6 {
     }
 }
 
+// 滚动条
+.el-scrollbar {
+    height: 100%;
+
+    .el-scrollbar__wrap {
+        overflow-x: hidden;
+    }
+}
+
 @import './icon';
