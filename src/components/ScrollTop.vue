@@ -1,21 +1,21 @@
 <template>
-    <transition name="el-fade-in">
-        <div class="page-up" @click="scrollToTop" v-show="toTopShow">
-            <i class="el-icon-caret-top"></i>
-        </div>
-    </transition>
+  <transition name="el-fade-in">
+    <div class="page-up" @click="scrollToTop" v-show="toTopShow">
+      <i class="el-icon-caret-top"></i>
+    </div>
+  </transition>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       toTopShow: false,
       scrollTop: 0
     }
   },
 
-  mounted () {
+  mounted() {
     this.$nextTick(function () {
       window.addEventListener(
         'scroll',
@@ -25,7 +25,7 @@ export default {
   },
 
   methods: {
-    handleScroll () {
+    handleScroll() {
       this.scrollTop = document.documentElement.scrollTop
       if (this.scrollTop > 300) {
         this.toTopShow = true
@@ -34,12 +34,12 @@ export default {
       }
     },
 
-    scrollToTop () {
+    scrollToTop() {
       let timer = null
       const _this = this
       cancelAnimationFrame(timer)
 
-      timer = requestAnimationFrame(function fn () {
+      timer = requestAnimationFrame(function fn() {
         if (_this.scrollTop > 5000) {
           _this.scrollTop -= 1000
 
@@ -73,32 +73,37 @@ export default {
 
 <style lang="scss" scoped >
 .page-up {
-    background-color: $color-primary;
-    position: fixed;
-    right: 50px;
-    bottom: 30px;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
-    opacity: 0.5;
-    z-index: 100;
-    .el-icon-caret-top {
-        color: #fff;
-        display: block;
-        line-height: 40px;
-        text-align: center;
-        font-size: 18px;
-    }
-    p {
-        display: none;
-        text-align: center;
-        color: #fff;
-    }
-    &:hover {
-        opacity: 1;
-    }
+  background-color: $color-primary;
+  position: fixed;
+  right: calc((100% - 930px) / 2 - 60px);
+  bottom: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  opacity: 0.5;
+  z-index: 100;
+
+  @media screen and (max-width: 1100px) {
+    right: calc((100% - 900px) / 2);
+  }
+
+  .el-icon-caret-top {
+    color: #fff;
+    display: block;
+    line-height: 40px;
+    text-align: center;
+    font-size: 18px;
+  }
+  p {
+    display: none;
+    text-align: center;
+    color: #fff;
+  }
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>

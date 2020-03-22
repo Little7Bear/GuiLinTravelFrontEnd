@@ -24,3 +24,8 @@ $font-weight-secondary:100;
 
 $font-line-height-primary:24px;
 $font-line-height-secondary:16px;
+
+// 投影
+$box-shadow-base: 0 2px 4px rgba(0, 0, 0, .12),
+0 0 6px rgba(0, 0, 0, .04);
+$box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1);

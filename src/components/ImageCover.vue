@@ -1,6 +1,6 @@
 <template>
   <div class="img-cover">
-    <el-image :src="src"></el-image>
+    <el-image :src="src" fit="cover"></el-image>
     <div class="cover"></div>
   </div>
 </template>

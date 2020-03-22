@@ -8,18 +8,5 @@
 //整体宽度
 @mixin body-width {
     margin: 0 auto;
-    min-width: 930px;
-
-    @media screen and (min-width: 930px) {
-        width: 930px;
-    }
-
-    @media screen and (min-width: 1245px) {
-        width: 1245px;
-    }
-
-    @media screen and (min-width: 1560px) {
-        width: 1560px;
-    }
-
+    width: 930px;
 }
