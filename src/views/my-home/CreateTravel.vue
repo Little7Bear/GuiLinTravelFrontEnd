@@ -4,13 +4,7 @@
       <span>游记名称：</span>
       <el-input v-model="name" placeholder="请输入内容"></el-input>
       <el-button type="primary">生成游记</el-button>
-      <el-button
-        type="primary"
-        round
-        icon="el-icon-back"
-        @click="$router.back()"
-        >返回</el-button
-      >
+      <el-button type="primary" round icon="el-icon-back" @click="$router.back()">返回</el-button>
     </div>
 
     <div class="content">
@@ -19,12 +13,7 @@
         <!-- 日期 -->
         <ol class="day-wrapper" id="day">
           <el-scrollbar ref="elscrollbar">
-            <li
-              class="day"
-              v-for="(item, index) in dayArr"
-              :key="index"
-              @click="selectDay(index)"
-            >
+            <li class="day" v-for="(item, index) in dayArr" :key="index" @click="selectDay(index)">
               <div :class="{ 'active-text': index === currentDay }">
                 <span>第{{ item }}天</span>
                 <sup
@@ -70,10 +59,54 @@
       </div>
 
       <!-- 描述 -->
-      <div class="describe"></div>
+      <div class="describe">
+        <el-image
+          src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+          fit="cover"
+        ></el-image>
+
+        <el-input
+          type="textarea"
+          rows="8"
+          placeholder="请输入照片描述"
+          maxlength="200"
+          v-model="describe"
+          show-word-limit
+          resize="none"
+        ></el-input>
+      </div>
 
       <!-- 时间地点 -->
-      <div class="toolbar"></div>
+      <div class="toolbar">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
+          <el-form-item label="日期时间" prop="time">
+            <el-date-picker v-model="form.time" type="datetime" placeholder="选择日期时间"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="地区" prop="area">
+            <el-select v-model="form.area" filterable placeholder="请选择地区">
+              <el-option
+                v-for="item in areas"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="地点类型">
+            <el-select v-model="form.addressType" placeholder="请选择地点类型">
+              <el-option
+                v-for="item in addressTypes"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="地点名称">
+            <el-input v-model="form.address" placeholder="请输入地点"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
   </div>
 </template>
@@ -107,7 +140,58 @@ export default {
         //   value: 5
         // },
       ],
-      dayArr: [1, 2, 3]
+      dayArr: [1, 2, 3],
+      describe: '',
+      form: {
+        time: '',
+        area: '',
+        addressType: '',
+        address: ''
+      },
+      addressTypes: [
+        {
+          value: 1,
+          label: '景点'
+        },
+        {
+          value: 2,
+          label: '餐厅'
+        },
+        {
+          value: 3,
+          label: '住宿'
+        },
+        {
+          value: 4,
+          label: '购物'
+        }
+      ],
+      areas: [
+        {
+          value: 1,
+          label: '桂林市区'
+        },
+        {
+          value: 2,
+          label: '阳朔'
+        },
+        {
+          value: 3,
+          label: '全州'
+        },
+        {
+          value: 4,
+          label: '兴安'
+        }
+      ],
+      rules: {
+        time: [
+          { required: true, message: '请选择时间', trigger: 'blur' }
+        ],
+        area: [
+          { required: true, message: '请选择区域', trigger: 'blur' }
+        ]
+      }
     }
   },
 
@@ -143,10 +227,6 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-// .create-travel{
-//   border: 1px solid #000;
-// }
-
 /deep/ {
   // 上传组件
   .el-upload--picture-card {
@@ -156,6 +236,10 @@ export default {
   .el-upload-list--picture-card .el-upload-list__item {
     width: 126px;
     height: 130px;
+  }
+
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
   }
 }
 
@@ -211,7 +295,7 @@ export default {
   // 图片
   .img-wrapper {
     width: 150px;
-    height: 70vh;
+    height: 500px;
   }
 
   .img-item {
@@ -272,5 +356,24 @@ export default {
     justify-content: center;
     opacity: 0.6;
   }
+}
+
+//中间描述
+.describe {
+  width: 400px;
+  margin: 0 16px;
+  padding-top: 30px;
+
+  .el-image {
+    border-radius: 10px;
+    margin-bottom: 33px;
+  }
+}
+
+// 右边表单
+.toolbar {
+  padding-top: 30px;
+  margin-left: 15px;
+  width: 260px;
 }
 </style>
