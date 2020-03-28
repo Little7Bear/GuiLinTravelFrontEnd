@@ -6,7 +6,7 @@
         <el-menu :default-active="activeIndex" mode="horizontal" background-color="#545c64" text-color="#fff"
           active-text-color="#ffd04b" :router="true">
           <el-menu-item class="el-menu-title">
-            <h1 class="title">桂林旅行网</h1>
+            <h1 class="title">专属旅游记录</h1>
           </el-menu-item>
           <el-menu-item v-for="(item, index) in urls" :key="index" :index="item.path">{{item.name}}</el-menu-item>
         </el-menu>
@@ -29,54 +29,56 @@
     <!-- 底部 -->
     <footer class="footer-wrapper">
       <div class="footer">
-        <span class="copy-right">Copyright © {{year}} zhaobin</span>
-        <span>网站备案号：xxxxxxxxx</span>
+        <span class="copy-right">©{{year}} glsite.cn</span>
+        <span href="" style="margin-right:50px;">邮箱：2395373083@qq.com</span>
+        <span> 网站备案号：<el-link href="http://beian.miit.gov.cn" :underline="false" target="_blank">桂ICP备19011827号
+          </el-link></span>
       </div>
     </footer>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'Home',
+  export default {
+    name: 'Home',
 
-  components: {},
+    components: {},
 
-  computed: {
-    activeIndex () {
-      let path = this.urls[0].path
-      this.urls.forEach(item => {
-        if (item.path.includes(this.$route.path)) {
-          path = item.path
-        }
-      })
-      return path
-    }
-  },
+    computed: {
+      activeIndex() {
+        let path = this.urls[0].path
+        this.urls.forEach(item => {
+          if (item.path.includes(this.$route.path)) {
+            path = item.path
+          }
+        })
+        return path
+      }
+    },
 
-  created () {
-    this.year = this.$dayjs().year()
-  },
+    created() {
+      this.year = this.$dayjs().year()
+    },
 
-  data () {
-    return {
-      searchVal: '',
-      year: '',
-      urls: [{
-        path: '/index',
-        name: '热门游记'
-      }, {
-        path: '/scenic',
-        name: '景点'
-      }, {
-        path: '/my-home',
-        name: '我的首页'
-      }]
-    }
-  },
+    data() {
+      return {
+        searchVal: '',
+        year: '',
+        urls: [{
+          path: '/index',
+          name: '热门游记'
+        }, {
+          path: '/scenic',
+          name: '景点'
+        }, {
+          path: '/my-home',
+          name: '我的首页'
+        }]
+      }
+    },
 
-  methods: {}
-}
+    methods: {}
+  }
 
 </script>
 
@@ -101,6 +103,7 @@ export default {
       width: 200px !important;
 
       .title {
+        font-size: 30px;
         float: left;
         border-bottom: none;
         margin: 0;
@@ -120,6 +123,11 @@ export default {
         width: 250px;
         margin-right: 40px;
       }
+    }
+
+    .el-link {
+      color: #fff;
+      margin-top: -3px;
     }
   }
 
@@ -174,7 +182,7 @@ export default {
     }
 
     .copy-right {
-      margin-right: 20px;
+      margin-right: 50px;
     }
   }
 

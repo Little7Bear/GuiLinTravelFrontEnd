@@ -20,7 +20,12 @@ export default {
     {
       path: '/scenic',
       name: 'Scenic',
-      component: () => import('@/views/scenic/Scenic')
+      component: () => import('@/views/scenic/Scenic'),
+    },
+    {
+      path: '/detail',
+      name: 'scenic-detail',
+      component: () => import('@/views/scenic/ScenicDetail'),
     },
     {
       path: '/my-home',
