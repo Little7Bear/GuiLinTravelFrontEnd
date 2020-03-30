@@ -14,19 +14,20 @@
       </div>
 
       <div class="body">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm1" label-width="100px">
+        <el-form :model="loginFrom" :rules="loginRules" ref="loginForm" label-width="100px">
 
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="loginFrom.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+          <el-form-item label="密码" prop="pass" class="last-item">
+            <el-input type="password" v-model="loginFrom.pass" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-link type="primary" class="forget">忘记密码?</el-link>
-            <el-button class="btn" type="primary" @click="submitForm('ruleForm1')">登录</el-button>
+            <el-checkbox v-model="loginFrom.recordPass">记住密码</el-checkbox>
+            <el-link type="primary" class="forget" :underline="false">忘记密码?</el-link>
+            <el-button class="btn" type="primary" @click="login('loginForm')">登录</el-button>
           </el-form-item>
 
         </el-form>
@@ -43,33 +44,41 @@
       </div>
 
       <div class="body">
-        <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-width="100px">
+        <el-form :model="registerFrom" :rules="registerRules" ref="registerFrom" label-width="100px">
 
-          <el-form-item label="用户名" prop="name">
-            <el-input v-model="ruleForm2.name"></el-input>
+          <el-form-item label="用户名" prop="name" type="email">
+            <el-input v-model="registerFrom.name"></el-input>
           </el-form-item>
 
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm2.pass" autocomplete="off"></el-input>
+            <el-input type="password" v-model="registerFrom.pass" autocomplete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm2.checkPass" autocomplete="off"></el-input>
+          <el-form-item label="确认密码" prop="checkPass" class="last-item">
+            <el-input type="password" v-model="registerFrom.checkPass" autocomplete="off"></el-input>
           </el-form-item>
 
-          <div class="r-hint">单击注册表示您同意我们的<el-link type="primary">服务条款</el-link>
+          <div class="r-hint">单击注册表示您同意我们的<el-link type="primary" @click="viewTerm">服务条款</el-link>
           </div>
+
           <el-form-item>
-            <el-button class="btn" type="primary" @click="submitForm('ruleForm2')">注册</el-button>
+            <el-button class="btn" type="primary" @click="register('registerFrom')">注册</el-button>
           </el-form-item>
         </el-form>
       </div>
 
     </div>
+
+    <!-- 服务条款 -->
+    <el-dialog title="服务条款" :visible.sync="dialogVisible" center>
+      <div class="service-terms" v-html="term"></div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import term from './term';
+
   export default {
     name: 'Login',
 
@@ -78,8 +87,8 @@
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.ruleForm2.checkPass !== '') {
-            this.$refs.ruleForm2.validateField('checkPass');
+          if (this.registerFrom.checkPass !== '') {
+            this.$refs.registerFrom.validateField('checkPass');
           }
           callback();
         }
@@ -87,7 +96,7 @@
       let validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm2.pass) {
+        } else if (value !== this.registerFrom.pass) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -95,26 +104,28 @@
       };
 
       return {
-        isLogin: true,
+        isLogin: false,
+        dialogVisible: false,
+        term: term,
 
-        ruleForm: {
+        loginFrom: {
+          name: '',
+          pass: '',
+          recordPass: false,
+        },
+
+        registerFrom: {
           name: '',
           pass: '',
           checkPass: '',
         },
 
-        ruleForm2: {
-          name: '',
-          pass: '',
-          checkPass: '',
-        },
-
-        rules: {
+        loginRules: {
           name: [{
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          }],
+              required: true,
+              message: '请输入用户名',
+              trigger: 'blur'
+            }],
           pass: [{
             required: true,
             message: '请输入密码',
@@ -122,27 +133,20 @@
           }]
         },
 
-        rules2: {
+        registerRules: {
           name: [{
               required: true,
               message: '请输入用户名',
               trigger: 'blur'
-            },
-            {
-              min: 1,
-              max: 10,
-              message: '长度在 1 到 10 个字符',
-              trigger: 'blur'
-            }
-          ],
+            }],
           pass: [{
             required: true,
             validator: validatePass,
             trigger: 'blur'
           }, {
             min: 6,
-            max: 20,
-            message: '密码至少6位',
+            max: 15,
+            message: '长度为6到15位',
             trigger: 'blur'
           }],
           checkPass: [{
@@ -155,15 +159,24 @@
     },
 
     methods: {
-      submitForm(formName) {
+      login(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
+            console.log('登录');
           }
         });
+      },
+
+      register(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log('注册');
+          }
+        });
+      },
+
+      viewTerm() {
+        this.dialogVisible = !this.dialogVisible;
       },
     },
   }
@@ -194,6 +207,7 @@
         position: relative;
 
         .title {
+          line-height: 50px;
           font-size: 20px;
           font-weight: bold;
           color: #545454;
@@ -225,9 +239,6 @@
 
         .forget {
           float: right;
-          line-height: 1;
-          margin-bottom: 10px;
-          font-size: 12px;
         }
 
         .r-hint {
@@ -239,6 +250,16 @@
           align-items: center;
         }
       }
+    }
+
+    .service-terms {
+      text-align: justify;
+      line-height: 24px;
+      font-size: 13px;
+    }
+
+    .last-item {
+      margin-bottom: 10px;
     }
   }
 

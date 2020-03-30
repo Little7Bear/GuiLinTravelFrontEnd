@@ -9,15 +9,11 @@ import router from './router'
 import store from './store'
 import './styles/iconfont/iconfont.css'
 import './styles/index.scss'
-import lodash from 'lodash'
-import dayjs from 'dayjs'
+import plugins from './plugins';
 
 Vue.config.productionTip = false
-
 Vue.use(ElementUI)
-
-Vue.prototype.$dayjs = dayjs
-Vue.prototype.$_ = lodash
+Vue.use(plugins)
 
 new Vue({
   router,
