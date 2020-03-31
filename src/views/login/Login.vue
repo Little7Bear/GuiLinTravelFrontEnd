@@ -20,8 +20,8 @@
             <el-input v-model="loginFrom.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="密码" prop="pass" class="last-item">
-            <el-input type="password" v-model="loginFrom.pass" autocomplete="off"></el-input>
+          <el-form-item label="密码" prop="password" class="last-item">
+            <el-input type="password" v-model="loginFrom.password" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -50,8 +50,8 @@
             <el-input v-model="registerFrom.name"></el-input>
           </el-form-item>
 
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="registerFrom.pass" autocomplete="off"></el-input>
+          <el-form-item label="密码" prop="password">
+            <el-input type="password" v-model="registerFrom.password" autocomplete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="确认密码" prop="checkPass" class="last-item">
@@ -78,6 +78,7 @@
 
 <script>
   import term from './term';
+  import request from './request';
 
   export default {
     name: 'Login',
@@ -96,7 +97,7 @@
       let validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.registerFrom.pass) {
+        } else if (value !== this.registerFrom.password) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -104,42 +105,47 @@
       };
 
       return {
-        isLogin: false,
+        isLogin: true,
         dialogVisible: false,
         term: term,
 
         loginFrom: {
           name: '',
-          pass: '',
+          password: '',
           recordPass: false,
         },
 
         registerFrom: {
           name: '',
-          pass: '',
+          password: '',
           checkPass: '',
         },
 
         loginRules: {
           name: [{
-              required: true,
-              message: '请输入用户名',
-              trigger: 'blur'
-            }],
-          pass: [{
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          }],
+          password: [{
             required: true,
             message: '请输入密码',
+            trigger: 'blur'
+          }, {
+            min: 6,
+            max: 15,
+            message: '至少6位',
             trigger: 'blur'
           }]
         },
 
         registerRules: {
           name: [{
-              required: true,
-              message: '请输入用户名',
-              trigger: 'blur'
-            }],
-          pass: [{
+            required: true,
+            message: '请输入用户名',
+            trigger: 'blur'
+          }],
+          password: [{
             required: true,
             validator: validatePass,
             trigger: 'blur'
@@ -162,7 +168,27 @@
       login(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log('登录');
+            let params = this.$_.omit(this.loginFrom, 'recordPass');
+            request.login(params)
+              .then(res => {
+                let data = res.data
+                if (data.code === 0) {
+                  if (this.loginFrom.recordPass) {
+                    localStorage.setItem('token', data.token)
+                  } else {
+                    sessionStorage.setItem('token', data.token)
+                  }
+
+                  if (this.$route.params.toName) {
+                    this.$router.replace({
+                      name: this.$route.params.toName
+                    });
+                  } else {
+                    this.$router.replace('/');
+                  }
+
+                }
+              })
           }
         });
       },
@@ -170,7 +196,18 @@
       register(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log('注册');
+            let params = this.$_.omit(this.registerFrom, 'checkPass');
+            request.register(params)
+              .then(res => {
+                let data = res.data
+                if (data.code === 0) {
+                  localStorage.setItem('token', data.token)
+                  this.$router.replace('/');
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              })
           }
         });
       },

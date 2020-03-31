@@ -20,4 +20,20 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  let token = sessionStorage.getItem('token') || localStorage.getItem('token')
+  if (token === null && to.name !== "Login") {
+    // 刷新页面时，如果没有token，就返回登录页面
+    next({
+      name: 'Login',
+      params: {
+        toName: to.name
+      },
+      replace: true
+    })
+  } else {
+    next();
+  }
+})
+
 export default router
