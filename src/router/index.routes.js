@@ -33,6 +33,11 @@ export default {
       component: () => import('@/views/my-home/MyHome')
     },
     {
+      path: '/personal',
+      name: 'Personal',
+      component: () => import('@/views/personal/PersonalSetting')
+    },
+    {
       path: '/create-travel',
       name: 'CreateTravel',
       component: () => import('@/views/my-home/CreateTravel')

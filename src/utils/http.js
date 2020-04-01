@@ -2,7 +2,7 @@ import Vue from 'vue';
 import axios from 'axios'
 import router from '@/router'
 
-let token = localStorage.getItem('token') || sessionStorage.getItem('token') // 获取token
+let token = localStorage.getItem('token')
 
 let axiosInstance = axios.create({
   timeout: 8000,
@@ -26,13 +26,14 @@ axiosInstance.interceptors.response.use(
 
   error => {
     const status = error.response.status;
-    // 错误状态处理
+    
+    // 登录过期
     if (status === 401) {
       localStorage.removeItem('token')
+      this.$store.commit('setToken', '')
       router.replace({ name: 'Login' })
-    } else if (status >= 404 && status < 422) {
-      router.replace('/404')
     }
+
     return Promise.reject(error);
   }
 );
