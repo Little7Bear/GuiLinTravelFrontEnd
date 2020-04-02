@@ -3,7 +3,12 @@ module.exports = {
 
   devServer: {
     port: '8090',
-    proxy: 'http://localhost:3000',
+    proxy: {
+      '/': { 
+        target: 'http://localhost:3000',
+      },
+    },
+
   },
 
   css: {

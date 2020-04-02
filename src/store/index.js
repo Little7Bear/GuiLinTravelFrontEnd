@@ -6,20 +6,30 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: '',
-    userID: '',
+    user: null,
   },
+
+  getters: {
+    getUser(state) {
+      state.user = localStorage.getItem("user")
+      return state.user
+    }
+  },
+
   mutations: {
     setToken(state, value) {
       state.token = value
     },
 
-    setUserID(state, value) {
-      state.userID = value
+    setUser(state, value) {
+      state.user = value
     },
 
   },
+
   actions: {
   },
+
   modules: {
   }
 })

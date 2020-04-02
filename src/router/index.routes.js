@@ -35,7 +35,7 @@ export default {
     {
       path: '/personal',
       name: 'Personal',
-      component: () => import('@/views/personal/PersonalSetting')
+      component: () => import('@/views/login/PersonalSetting')
     },
     {
       path: '/create-travel',
