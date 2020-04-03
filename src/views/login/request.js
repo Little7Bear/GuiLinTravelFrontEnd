@@ -14,6 +14,12 @@ class User {
     return http.get('/users/' + id)
   }
 
+  findAll(params) {
+    return http.get('/users/all', {
+      params: params
+    })
+  }
+
   update(id, params) {
     return http.patch('/users/' + id, params)
   }
