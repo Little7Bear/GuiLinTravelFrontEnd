@@ -4,7 +4,14 @@
             <el-form-item label="头像" class="item-avatar">
                 <div class="avatar-container">
                     <el-avatar :size="50" :src="form.avatar_url"></el-avatar>
-                    <el-upload action="/upload">
+                    <el-upload
+                        :action="uploadUrl"
+                        :headers="avatarHeaders"
+                        :show-file-list="false"
+                        :multiple="false"
+                        :on-success="onAvatarSuccess"
+                        :on-error="onAvatarError"
+                    >
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
                     <el-link :underline="false" type="primary" @click="isChange=!isChange">修改密码</el-link>
@@ -58,6 +65,7 @@ export default {
             oldPassword: '',
             newPassword: '',
             isChange: false,
+
         }
     },
 
@@ -66,10 +74,20 @@ export default {
 
     },
 
-    computed: mapState([
-        'user'
-    ]),
+    computed: {
+        ...mapState([
+            'user',
+            'token'
+        ]),
 
+        uploadUrl() {
+            return `/upload/users/${this.user.id}`
+        },
+
+        avatarHeaders() {
+            return { Authorization: `Bearer ${this.token}` }
+        },
+    },
 
     methods: {
         _queryData() {
@@ -105,6 +123,24 @@ export default {
                         });
                     }
                 })
+        },
+
+
+        onAvatarSuccess() {
+            this._queryData(this.params)
+        },
+
+        onAvatarError() {
+            this.$message.error('上传失败请重试!');
+        },
+
+        beforeAvatarUpload(file) {
+            const isLt10M = file.size / 1024 / 1024 <= 10;
+
+            if (!isLt10M) {
+                this.$message.error('上传头像图片大小不能超过 10MB!');
+            }
+            return isLt10M;
         },
 
     },

@@ -31,10 +31,6 @@ class User {
     return http.delete('/users/' + id)
   }
 
-  // upload(params) {
-  //   return http.post('/upload', params)
-  // }
-
 }
 
 export default new User()
