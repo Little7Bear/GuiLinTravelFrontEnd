@@ -25,7 +25,7 @@
                         <template slot="title">我的工作台</template>
                         <el-menu-item index="/create-travel">创建游记</el-menu-item>
                         <el-menu-item index="/user/personal">设置</el-menu-item>
-                        <el-menu-item v-permission="'1'" index="/user/manage">用户管理</el-menu-item>
+                        <el-menu-item v-permission="'0'" index="/user/manage">用户管理</el-menu-item>
                         <el-menu-item @click="onExit">退出</el-menu-item>
                     </el-submenu>
                 </el-menu>
@@ -92,41 +92,34 @@ export default {
         }
     },
 
-    computed: {
-        isLogin() {
-            return this.$store.state.token;
-        },
-
-        isAdmin() {
-            if (this.$store.getters.getUser) {
-                let user = JSON.parse(this.$store.getters.getUser)
-                if (user.status === 0) {
-                    return true
-                } else {
-                    return false
-                }
-            }
-        }
-    },
-
     created() {
         this._initState()
     },
 
+    computed: {
+        isLogin() {
+            return this.$store.state.token ? true : false
+        },
+
+    },
 
     methods: {
         _initState() {
             this.year = this.$dayjs().year()
-            this.activeIndex = sessionStorage.getItem('homeIndex') || '/index'
+            this.activeIndex = this.$localStorage.session('homeIndex') || '/index'
         },
 
         selectMenu(index) {
-            sessionStorage.setItem('homeIndex', index)
+            this.$localStorage.session('homeIndex', index)
         },
 
         onExit() {
-            localStorage.removeItem('token')
-            this.$store.commit('setToken', '')
+            this.$store.commit({
+                type: 'setUser',
+                token: null,
+                user: null
+            })
+            
             if (this.$route.path !== '/index') {
                 this.$router.push('/');
             }

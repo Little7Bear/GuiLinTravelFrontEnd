@@ -9,7 +9,6 @@ class User {
     return http.post('/users/login', params)
   }
 
-
   findById(id) {
     return http.get('/users/' + id)
   }
@@ -27,6 +26,14 @@ class User {
   updatePassword(id, params) {
     return http.patch('/users/update-password/' + id, params)
   }
+
+  delete(id) {
+    return http.delete('/users/' + id)
+  }
+
+  // upload(params) {
+  //   return http.post('/upload', params)
+  // }
 
 }
 

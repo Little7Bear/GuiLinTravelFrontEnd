@@ -1,35 +1,36 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import storage from 'store2';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: '',
-    user: null,
-  },
-
-  getters: {
-    getUser(state) {
-      state.user = localStorage.getItem("user")
-      return state.user
-    }
+    // 默认读取storage里面的数据
+    token: storage.get('token') || '',
+    user: storage.get('user') || null,
   },
 
   mutations: {
-    setToken(state, value) {
-      state.token = value
-    },
+    setUser(state, payload) {
+      state.token = payload.token
+      state.user = payload.user
 
-    setUser(state, value) {
-      state.user = value
+      // 添加到localStorage
+      for (const key in payload) {
+        if (payload.hasOwnProperty(key)) {
+          const item = payload[key]
+
+          if (item) {
+            // key值不为空添加
+            storage.set(key, item);
+          } else {
+            // key值为空删除
+            storage.remove(key)
+          }
+        }
+      }
     },
 
   },
-
-  actions: {
-  },
-
-  modules: {
-  }
 })

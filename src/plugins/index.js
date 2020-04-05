@@ -1,12 +1,14 @@
 import lodash from 'lodash'
 import dayjs from 'dayjs'
 import { checkJurisdiction } from '../common/jurisdiction'
+import store2 from 'store2';
 
 export default {
   install(Vue, options) {
     // 1. 添加全局方法或属性
     Vue.prototype.$dayjs = dayjs
     Vue.prototype.$_ = lodash
+    Vue.prototype.$localStorage = store2
 
     // 2. 添加全局资源
     Vue.directive('permission', {

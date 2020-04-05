@@ -1,18 +1,31 @@
 import Vue from 'vue';
 import axios from 'axios'
 import router from '@/router'
+import store2 from 'store2';
 
-let token = localStorage.getItem('token')
 
 let axiosInstance = axios.create({
   timeout: 8000,
   headers: {
-    'Content-Type': 'application/json;charset=UTF-8',
-    'Authorization': 'Bearer ' + token
+    'Content-Type': 'application/json;charset=UTF-8'
   }
 });
 
-// 发起请求后
+// 拦截请求
+axiosInstance.interceptors.request.use(
+  config => {
+    if (store2('token')) {
+      config.headers.Authorization = 'Bearer ' + store2('token');
+    }
+
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+)
+
+// 拦截响应
 axiosInstance.interceptors.response.use(
   response => {
     if (response.data.code !== 0) {
@@ -21,7 +34,7 @@ axiosInstance.interceptors.response.use(
         type: 'warning'
       });
     }
-    return Promise.resolve(response)
+    return Promise.resolve(response.data)
   },
 
   error => {
@@ -29,8 +42,17 @@ axiosInstance.interceptors.response.use(
 
     // 登录过期
     if (status === 401) {
-      localStorage.removeItem('token')
-      this.$store.commit('setToken', '')
+      store.commit({
+        type: 'setUser',
+        token: null,
+        user: null
+      })
+
+      Vue.prototype.$message({
+        message: '请登录',
+        type: 'warning'
+      });
+
       router.replace({ name: 'Login' })
     }
 

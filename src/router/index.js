@@ -22,9 +22,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // 设置token
-  let token = localStorage.getItem('token')
-  store.commit('setToken', token)
+  localStorage.getItem('token')
 
   next()
 })
