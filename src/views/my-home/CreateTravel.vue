@@ -1,9 +1,15 @@
 <template>
   <div class="create-travel">
+    <!-- 头部 -->
     <div class="header">
       <span>游记名称：</span>
-      <el-input v-model="name" placeholder="请输入内容"></el-input>
-      <el-button type="primary">生成游记</el-button>
+      <el-input v-model="name" placeholder="请输入名称" maxlength="15" show-word-limit class="name"></el-input>
+
+      <span>日期：</span>
+      <el-date-picker v-model="activeSection.date" type="date" placeholder="选择日期"></el-date-picker>
+
+      <el-button type="primary" :disabled="createDisabled">生成游记</el-button>
+
       <el-button type="primary" round icon="el-icon-back" @click="$router.back()">返回</el-button>
     </div>
 
@@ -11,16 +17,12 @@
       <!-- 侧边照片选择器 -->
       <div class="sidebar">
         <!-- 日期 -->
-        <ol class="day-wrapper" id="day">
-          <el-scrollbar ref="elscrollbar">
-            <li class="day" v-for="(item, index) in dayArr" :key="index" @click="selectDay(index)">
-              <div :class="{ 'active-text': index === currentDay }">
-                <span>第{{ item }}天</span>
-                <sup
-                  class="el-icon-close"
-                  v-show="index === currentDay"
-                  @click.stop="delDay(index)"
-                ></sup>
+        <ol class="day-wrapper">
+          <el-scrollbar ref="elscrollbar1">
+            <li class="day" v-for="(day, i) in days" :key="i" @click="selectDay(i)">
+              <div :class="{ 'active-text': i === currentDayIndex }">
+                <span>第{{ i + 1 }}天</span>
+                <sup class="el-icon-close" v-show="i === currentDayIndex" @click.stop="delDay(i)"></sup>
               </div>
             </li>
             <div>
@@ -34,22 +36,29 @@
 
         <!-- 照片 -->
         <ol class="img-wrapper">
-          <el-scrollbar>
+          <el-scrollbar ref="elscrollbar2">
             <li
-              v-for="(item, index) in imgArr"
+              v-for="(section, index) in activeDay.sections"
               :key="index"
               class="img-item"
               @click.stop="selectImg(index)"
             >
-              <img :src="item.url" alt="图片" class="thumbnail" />
-              <div class="shade" v-show="currentImg === index">
+              <img :src="section.url" alt="图片" class="thumbnail" />
+              <div class="shade" v-show="activeDay.currentImg === index">
                 <i class="el-icon-edit"></i>
-                <i class="el-icon-error" @click="delImg(item)"></i>
+                <i class="el-icon-error" @click.stop="delImg(section,index)"></i>
               </div>
             </li>
 
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              ref="upload"
+              :action="uploadUrl"
+              :headers="uploadHeaders"
+              :show-file-list="false"
+              :multiple="false"
+              :auto-upload="false"
+              :on-success="onUploadSuccess"
+              :on-change="onUploadChange"
               list-type="picture-card"
             >
               <i class="el-icon-plus"></i>
@@ -60,17 +69,16 @@
 
       <!-- 描述 -->
       <div class="describe">
-        <el-image
-          src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-          fit="cover"
-        ></el-image>
+        <div class="img-container">
+          <el-image v-show="showBigImg" :src="bigImgUrl" fit="cover"></el-image>
+        </div>
 
         <el-input
           type="textarea"
           rows="8"
           placeholder="请输入照片描述"
-          maxlength="200"
-          v-model="describe"
+          maxlength="500"
+          v-model="activeSection.describe"
           show-word-limit
           resize="none"
         ></el-input>
@@ -78,22 +86,13 @@
 
       <!-- 时间地点 -->
       <div class="toolbar">
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="top">
-          <el-form-item label="日期时间" prop="time">
-            <el-date-picker v-model="form.time" type="datetime" placeholder="选择日期时间"></el-date-picker>
+        <el-form ref="form" :model="activeSection" label-width="80px" label-position="top">
+          <el-form-item label="时间">
+            <el-time-picker v-model="activeSection.time" placeholder="请选择时间"></el-time-picker>
           </el-form-item>
-          <el-form-item label="地区" prop="area">
-            <el-select v-model="form.area" filterable placeholder="请选择地区">
-              <el-option
-                v-for="item in areas"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+
           <el-form-item label="地点类型">
-            <el-select v-model="form.addressType" placeholder="请选择地点类型">
+            <el-select v-model="activeSection.addressType" placeholder="请选择地点类型">
               <el-option
                 v-for="item in addressTypes"
                 :key="item.value"
@@ -102,8 +101,9 @@
               ></el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item label="地点名称">
-            <el-input v-model="form.address" placeholder="请输入地点"></el-input>
+            <el-input v-model="activeSection.address" placeholder="请输入地点"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -112,118 +112,200 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  data () {
+  data() {
     return {
-      name: '',
-      currentDay: 0,
-      currentImg: 0,
-      imgArr: [
-        {
-          url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-          value: 1
-        }
-        // {
-        //   url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        //   value: 2
-        // },
-        // {
-        //   url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        //   value: 3
-        // },
-        // {
-        //   url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        //   value: 4
-        // },
-        // {
-        //   url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-        //   value: 5
-        // },
-      ],
-      dayArr: [1, 2, 3],
-      describe: '',
-      form: {
-        time: '',
-        area: '',
-        addressType: '',
-        address: ''
+      name: '', //游记名称
+      createDisabled: true, //能否生成游记
+      //总数据
+      days: [],
+      currentDayIndex: -1, //选中天下标
+      activeDay: { //选中天数据
+        sections: [],
+        currentImg: -1,
+        imgActive: 0,
       },
-      addressTypes: [
-        {
-          value: 1,
-          label: '景点'
-        },
-        {
-          value: 2,
-          label: '餐厅'
-        },
-        {
-          value: 3,
-          label: '住宿'
-        },
-        {
-          value: 4,
-          label: '购物'
-        }
-      ],
-      areas: [
-        {
-          value: 1,
-          label: '桂林市区'
-        },
-        {
-          value: 2,
-          label: '阳朔'
-        },
-        {
-          value: 3,
-          label: '全州'
-        },
-        {
-          value: 4,
-          label: '兴安'
-        }
-      ],
-      rules: {
-        time: [
-          { required: true, message: '请选择时间', trigger: 'blur' }
-        ],
-        area: [
-          { required: true, message: '请选择区域', trigger: 'blur' }
-        ]
+      activeSection: { //选中章节数据
+        url: '',
+        date: '',
+        time: '',
+        addressType: '',
+        address: '',
+        describe: '',
+      },
+
+      addressTypes: [{
+        value: 1,
+        label: '景点'
+      },
+      {
+        value: 2,
+        label: '餐厅'
+      },
+      {
+        value: 3,
+        label: '住宿'
+      },
+      {
+        value: 4,
+        label: '购物'
       }
+      ],
+      areas: [{
+        value: 1,
+        label: '桂林市区'
+      },
+      {
+        value: 2,
+        label: '阳朔'
+      },
+      {
+        value: 3,
+        label: '全州'
+      },
+      {
+        value: 4,
+        label: '兴安'
+      }
+      ],
     }
   },
 
-  methods: {
-    selectDay (index) {
-      this.currentDay = index
+  computed: {
+    ...mapState([
+      'user',
+      'token'
+    ]),
+
+    uploadUrl() {
+      return `/upload/notes/${this.user.id}`
     },
 
-    addDay (index) {
-      this.dayArr.push(this.dayArr.length + 1)
-      this.currentDay = this.dayArr.length - 1
-      // 元素滚动
-      const div = this.$refs.elscrollbar.$refs.wrap
+    uploadHeaders() {
+      return {
+        Authorization: `Bearer ${this.token}`
+      }
+    },
+
+    showBigImg() {
+      return this.activeSection.url !== ''
+    },
+
+    bigImgUrl() {
+      return this.activeSection.url
+    },
+
+  },
+
+  watch: {
+    //监听第几天展示不同天数的数据
+    currentDayIndex: {
+      handler(newVal) {
+        if (newVal < 0) {
+          this.activeDay = {
+            sections: [],
+            currentImg: -1,
+            imgActive: 0,
+          }
+          return;
+        }
+        this.activeDay = this.days[newVal]
+        this.activeDay.currentImg = -1
+        // this.activeSection = {
+        //   url: '',
+        //   date: '',
+        //   time: '',
+        //   addressType: '',
+        //   address: '',
+        //   describe: '',
+        // }
+      },
+    },
+
+    'activeDay.currentImg': {
+      handler(newVal) {
+        if (newVal >= 0) {
+          this.activeSection = this.activeDay.sections[newVal]
+        }
+      },
+    },
+
+  },
+
+  methods: {
+    // 添加天数
+    addDay() {
+      let obj = {
+        sections: [],
+        currentImg: -1,
+      }
+
+      this.days.push(obj)
+      this.currentDayIndex = this.days.length - 1
+
+      // 元素滚动到底部
+      const scrollbar = this.$refs.elscrollbar1.$refs.wrap
       this.$nextTick(() => {
-        div.scrollTop = div.scrollHeight
+        scrollbar.scrollTop = scrollbar.scrollHeight
       })
     },
 
-    delDay (index) {
-      this.dayArr.splice(index, 1)
-      this.currentDay = index - 1
+    delDay(index) {
+      this.days.splice(index, 1)
+      this.currentDayIndex = index - 1
     },
 
-    selectImg (index, item) {
-      this.currentImg = index
+    selectDay(index) {
+      this.currentDayIndex = index
     },
 
-    delImg (item) {
-      console.log(item.value)
-    }
+    selectImg(index, item) {
+      this.activeDay.currentImg = index
+    },
+
+    delImg(section, index) {
+      this.$refs.upload.abort(section.file)
+      this.activeSection = {
+        url: '',
+        date: '',
+        time: '',
+        addressType: '',
+        address: '',
+        describe: '',
+      }
+      this.activeDay.currentImg = - 1
+      this.activeDay.sections.splice(index, 1)
+    },
+
+    onUploadSuccess(response, file, fileList) {
+      console.log(response);
+      console.log(file);
+    },
+
+    onUploadChange(file, fileList) {
+      //   console.log(file);
+      let section = {
+        url: file.url,
+        date: '',
+        time: '',
+        addressType: '',
+        address: '',
+        describe: '',
+        file: file
+      }
+      this.days[this.currentDayIndex].sections.push(section);
+
+      // 元素滚动到底部
+      const scrollbar = this.$refs.elscrollbar2.$refs.wrap
+      this.$nextTick(() => {
+        scrollbar.scrollTop = scrollbar.scrollHeight
+      })
+    },
   }
 }
+
 </script>
 
 <style lang='scss' scoped>
@@ -233,9 +315,18 @@ export default {
     width: 126px;
     height: 130px;
   }
+
   .el-upload-list--picture-card .el-upload-list__item {
     width: 126px;
     height: 130px;
+  }
+
+  .img-active {
+    opacity: 1;
+  }
+
+  li:focus {
+    outline-width: 0;
   }
 
   .el-scrollbar__wrap {
@@ -247,9 +338,12 @@ export default {
   display: flex;
   align-items: center;
 
+  .name {
+    width: 280px;
+  }
+
   .el-input {
-    width: 300px;
-    margin-right: auto;
+    margin-right: 20px;
   }
 }
 
@@ -309,6 +403,7 @@ export default {
       width: 100%;
       height: 100%;
       border-radius: 6px;
+      border: 1px solid $border-color-light;
       object-fit: cover;
     }
 
@@ -364,9 +459,18 @@ export default {
   margin: 0 16px;
   padding-top: 30px;
 
+  .img-container {
+    margin-bottom: 20px;
+    width: 400px;
+    height: 300px;
+    border: 1px solid $border-color-light;
+    border-radius: 10px;
+  }
+
   .el-image {
     border-radius: 10px;
-    margin-bottom: 33px;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -375,5 +479,9 @@ export default {
   padding-top: 30px;
   margin-left: 15px;
   width: 260px;
+
+  /deep/ .el-input__inner {
+    width: 220px;
+  }
 }
 </style>
