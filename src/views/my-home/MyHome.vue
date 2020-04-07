@@ -3,17 +3,17 @@
     <div class="main">
       <!-- 个人信息 -->
       <div class="home-header">
-        <el-avatar :size="80" :src="circleUrl"></el-avatar>
+        <el-avatar :size="80" :src="avatar_url"></el-avatar>
         <div class="user-info">
-          <span class="user-name">Mr.D_dfbf0</span>
+          <span class="user-name">{{userName}}</span>
         </div>
       </div>
 
       <!-- toolbar -->
       <div class="toolbar">
-        <span class="toolbar-text">游记1</span>
-        <span class="toolbar-text">喜欢1</span>
-        <span class="toolbar-text">收藏1</span>
+        <span class="toolbar-text">游记{{ownCount}}</span>
+        <span class="toolbar-text">喜欢{{likeCount}}</span>
+        <span class="toolbar-text">收藏{{collectCount}}</span>
       </div>
 
       <!-- 曾经的游记 -->
@@ -23,30 +23,27 @@
           <el-card
             :body-style="{ padding: '0px' }"
             shadow="hover"
-            v-for="(item, index) in 2"
+            v-for="(item, index) in notes"
             :key="index"
           >
-            <imageCover
-              src="http://photos.breadtrip.com/photo_2020_03_18_bab8e09048a34b179c3e5a2c5bd31b10.jpg?imageView/2/w/960/q/85"
-              class="image"
-            />
+            <imageCover :src="item.cover" class="image" />
             <div class="card-body">
               <div>
-                <h5 class="card-title">云南5日游</h5>
+                <h5 class="card-title">{{item.title}}</h5>
                 <div class="card-toolbar">
-                  <span>2020.03.18</span>
-                  <span class="day-count">1天</span>
+                  <span>{{item.date}}</span>
+                  <span class="day-count">{{item.dayTotal}}天</span>
                 </div>
               </div>
               <div class="card-right">
                 <div class="icon-container">
                   <i class="iconfont icon-loved"></i>
-                  <span class="icon-count">10</span>
+                  <span class="icon-count">{{item.like}}</span>
                 </div>
 
                 <div class="icon-container">
                   <i class="iconfont icon-comment"></i>
-                  <span class="icon-count">5</span>
+                  <span class="icon-count">{{item.comment}}</span>
                 </div>
               </div>
             </div>
@@ -67,36 +64,14 @@
       <div class="sidebar-achievement">
         <h4 class="achievement-title">旅行成就</h4>
         <div class="achievement-box">
-          <div class="achievement-item">
-            <div class="achievement-number">1</div>
-            <div>次被阅读</div>
-          </div>
           <div class="achievement-row">
             <div class="achievement-item">
-              <div class="achievement-number">1</div>
+              <div class="achievement-number">{{receiveLike}}</div>
               <div>次被喜欢</div>
             </div>
             <div class="achievement-item">
-              <div class="achievement-number">1</div>
+              <div class="achievement-number">{{receiveCollect}}</div>
               <div>次被收藏</div>
-            </div>
-          </div>
-
-          <div class="achievement-mileage">
-            <i class="iconfont icon-trophy"></i>
-            <span>旅行总里程</span>
-            <span class="number">1000.0</span>
-            <sub>km</sub>
-          </div>
-
-          <div class="achievement-row">
-            <div class="achievement-item">
-              <div class="achievement-number">1</div>
-              <div>区县</div>
-            </div>
-            <div class="achievement-item">
-              <div class="achievement-number">1</div>
-              <div>景点</div>
             </div>
           </div>
         </div>
@@ -106,20 +81,59 @@
 </template>
 
 <script>
+import request from './request';
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
-      circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+      avatar_url: "",
+      userName: '',
+      ownCount: 0,
+      likeCount: 0,
+      collectCount: 0,
+      receiveLike: 0,
+      receiveCollect: 0,
+      notes: [],
     }
   },
 
+  computed: {
+    ...mapState([
+      'user',
+    ]),
+  },
+
+  created() {
+    this._queryData()
+  },
+
   methods: {
+    _queryData() {
+      if (!this.user) {
+        this.$message({ message: '请先登录', duration: 1000, showClose: true })
+        return;
+      }
+
+      request.findByUserID(this.user.id)
+        .then(res => {
+          let data = res.data
+          this.userName = data.username
+          this.avatar_url = data.avatar_url
+          this.notes = data.notes
+          this.ownCount = data.ownCount
+          this.likeCount = data.likeCount
+          this.collectCount = data.collectCount
+          this.receiveLike = data.receiveLike
+          this.receiveCollect = data.receiveCollect
+        })
+    },
+
     createTravel() {
       this.$router.push({ name: 'CreateTravel' })
     },
   },
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -292,29 +306,6 @@ export default {
       color: $color-text-primary;
       font-size: 20px;
       font-weight: bold;
-    }
-
-    .achievement-mileage {
-      height: 40px;
-      border: 1px solid $border-color-light;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 13px;
-      margin-top: 20px;
-
-      .number {
-        font-size: 16px;
-        font-weight: bold;
-        margin-right: 5px;
-        margin-left: 10px;
-      }
-
-      .icon-trophy {
-        margin-right: 10px;
-        font-size: 20px;
-        color: orange;
-      }
     }
   }
 }

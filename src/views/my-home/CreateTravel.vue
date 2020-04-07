@@ -6,9 +6,15 @@
       <el-input v-model="name" placeholder="请输入名称" maxlength="15" show-word-limit class="name"></el-input>
 
       <span>日期：</span>
-      <el-date-picker v-model="activeSection.date" type="date" placeholder="选择日期"></el-date-picker>
+      <el-date-picker
+        v-model="activeDay.date"
+        type="date"
+        placeholder="选择日期"
+        :picker-options="pickerOptions"
+        value-format="yyyy-MM-dd"
+      ></el-date-picker>
 
-      <el-button type="primary" :disabled="createDisabled">生成游记</el-button>
+      <el-button type="primary" :disabled="isDisabled" @click="submit">生成游记</el-button>
 
       <el-button type="primary" round icon="el-icon-back" @click="$router.back()">返回</el-button>
     </div>
@@ -51,14 +57,12 @@
             </li>
 
             <el-upload
-              ref="upload"
               :action="uploadUrl"
               :headers="uploadHeaders"
               :show-file-list="false"
               :multiple="false"
-              :auto-upload="false"
+              :before-upload="onUploadBefore"
               :on-success="onUploadSuccess"
-              :on-change="onUploadChange"
               list-type="picture-card"
             >
               <i class="el-icon-plus"></i>
@@ -88,7 +92,11 @@
       <div class="toolbar">
         <el-form ref="form" :model="activeSection" label-width="80px" label-position="top">
           <el-form-item label="时间">
-            <el-time-picker v-model="activeSection.time" placeholder="请选择时间"></el-time-picker>
+            <el-time-picker
+              v-model="activeSection.time"
+              value-format="HH:mm:ss"
+              placeholder="请选择时间"
+            ></el-time-picker>
           </el-form-item>
 
           <el-form-item label="地点类型">
@@ -113,62 +121,58 @@
 
 <script>
 import { mapState } from 'vuex'
+import dayjs from 'dayjs'
+import request from './request'
 
 export default {
   data() {
     return {
       name: '', //游记名称
-      createDisabled: true, //能否生成游记
+      // createDisabled: true, //能否生成游记
       //总数据
       days: [],
       currentDayIndex: -1, //选中天下标
-      activeDay: { //选中天数据
-        sections: [],
-        currentImg: -1,
-        imgActive: 0,
-      },
-      activeSection: { //选中章节数据
-        url: '',
-        date: '',
-        time: '',
-        addressType: '',
-        address: '',
-        describe: '',
+      pickerOptions: {//日期选项
+        disabledDate(time) {
+          return time.getTime() > dayjs().endOf('day')
+        }
       },
 
-      addressTypes: [{
-        value: 1,
-        label: '景点'
-      },
-      {
-        value: 2,
-        label: '餐厅'
-      },
-      {
-        value: 3,
-        label: '住宿'
-      },
-      {
-        value: 4,
-        label: '购物'
-      }
+      addressTypes: [
+        {
+          value: 1,
+          label: '景点'
+        },
+        {
+          value: 2,
+          label: '餐厅'
+        },
+        {
+          value: 3,
+          label: '住宿'
+        },
+        {
+          value: 4,
+          label: '购物'
+        }
       ],
-      areas: [{
-        value: 1,
-        label: '桂林市区'
-      },
-      {
-        value: 2,
-        label: '阳朔'
-      },
-      {
-        value: 3,
-        label: '全州'
-      },
-      {
-        value: 4,
-        label: '兴安'
-      }
+      areas: [
+        {
+          value: 1,
+          label: '桂林市区'
+        },
+        {
+          value: 2,
+          label: '阳朔'
+        },
+        {
+          value: 3,
+          label: '全州'
+        },
+        {
+          value: 4,
+          label: '兴安'
+        }
       ],
     }
   },
@@ -197,39 +201,34 @@ export default {
       return this.activeSection.url
     },
 
-  },
-
-  watch: {
-    //监听第几天展示不同天数的数据
-    currentDayIndex: {
-      handler(newVal) {
-        if (newVal < 0) {
-          this.activeDay = {
-            sections: [],
-            currentImg: -1,
-            imgActive: 0,
-          }
-          return;
-        }
-        this.activeDay = this.days[newVal]
-        this.activeDay.currentImg = -1
-        // this.activeSection = {
-        //   url: '',
-        //   date: '',
-        //   time: '',
-        //   addressType: '',
-        //   address: '',
-        //   describe: '',
-        // }
-      },
+    activeDay() {//选中天数据
+      let obj = {
+        sections: [], currentImg: -1, date: ''
+      }
+      return this.days[this.currentDayIndex] || obj
     },
 
-    'activeDay.currentImg': {
-      handler(newVal) {
-        if (newVal >= 0) {
-          this.activeSection = this.activeDay.sections[newVal]
+    activeSection() { //选中天章节数据
+      let obj = {
+        url: '',
+        time: '',
+        addressType: '',
+        address: '',
+        describe: '',
+      }
+      return this.activeDay.sections[this.activeDay.currentImg] || obj
+    },
+
+    isDisabled() {
+      if (this.name && this.days.length > 0) {
+        if (this.days[0].date && this.days[0].sections.length > 0) {
+          return false
+        } else {
+          return true
         }
-      },
+      } else {
+        return true
+      }
     },
 
   },
@@ -237,13 +236,28 @@ export default {
   methods: {
     // 添加天数
     addDay() {
+      let preLength = this.days.length - 1
+      let date = ''
+
+      if (this.days[preLength]) {
+        let preDate = this.days[preLength].date
+        if (!preDate) {
+          this.$message('请选择开始日期')
+          return;
+        }
+        date = this.$dayjs(preDate).add(1, 'day').format('YYYY-MM-DD')
+      } else {
+        date = ''
+      }
+
       let obj = {
         sections: [],
         currentImg: -1,
+        date: date
       }
 
       this.days.push(obj)
-      this.currentDayIndex = this.days.length - 1
+      this.currentDayIndex = preLength + 1
 
       // 元素滚动到底部
       const scrollbar = this.$refs.elscrollbar1.$refs.wrap
@@ -266,34 +280,24 @@ export default {
     },
 
     delImg(section, index) {
-      this.$refs.upload.abort(section.file)
-      this.activeSection = {
-        url: '',
-        date: '',
-        time: '',
-        addressType: '',
-        address: '',
-        describe: '',
-      }
       this.activeDay.currentImg = - 1
       this.activeDay.sections.splice(index, 1)
     },
 
-    onUploadSuccess(response, file, fileList) {
-      console.log(response);
-      console.log(file);
+    onUploadBefore() {
+      if (this.currentDayIndex <= -1) {
+        this.$message('请添加日期')
+        return false;
+      }
     },
 
-    onUploadChange(file, fileList) {
-      //   console.log(file);
+    onUploadSuccess(response) {
       let section = {
-        url: file.url,
-        date: '',
+        url: response.url,
         time: '',
         addressType: '',
         address: '',
         describe: '',
-        file: file
       }
       this.days[this.currentDayIndex].sections.push(section);
 
@@ -303,6 +307,19 @@ export default {
         scrollbar.scrollTop = scrollbar.scrollHeight
       })
     },
+
+    submit() {
+      let params = {
+        name: this.name,
+        userID: this.user.id,
+        days: this.days,
+      }
+      request.create(params)
+        .then(res => {
+          this.$router.replace({ name: 'MyHome' })
+        })
+    },
+
   }
 }
 
