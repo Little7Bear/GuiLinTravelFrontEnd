@@ -92,7 +92,7 @@
 
       viewDetails(param) {
         this.$router.push({
-          name: "scenic-detail",
+          name: "ScenicDetail",
           params: {
             id: param.id,
           }

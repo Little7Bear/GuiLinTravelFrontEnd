@@ -25,6 +25,7 @@
             shadow="hover"
             v-for="(item, index) in notes"
             :key="index"
+            @click.native="viewDetail(item.id)"
           >
             <imageCover :src="item.cover" class="image" />
             <div class="card-body">
@@ -132,6 +133,10 @@ export default {
     createTravel() {
       this.$router.push({ name: 'CreateTravel' })
     },
+
+    viewDetail(articleID) {
+      this.$router.push({ name: 'Article', query: { articleID } })
+    },
   },
 }
 </script>
@@ -202,6 +207,9 @@ export default {
     .el-card {
       width: 300px;
       margin-bottom: 10px;
+      :hover {
+        cursor: pointer;
+      }
     }
 
     .image {
@@ -209,6 +217,7 @@ export default {
     }
 
     .card-body {
+      border-top: 1px solid $border-color-base;
       display: flex;
       justify-content: space-between;
       padding: 14px;

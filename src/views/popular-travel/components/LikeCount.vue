@@ -1,11 +1,13 @@
 <template>
-  <div class="like-count" @click="giveLike">
-    <i :class="['iconfont',isLike?iconName[0]:iconName[1]]"></i>
+  <div class="like-count">
+    <i :class="['iconfont',isLike?iconName[0]:iconName[1]]" @click="giveLike"></i>
     <span>{{likeCount}}</span>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: {
     count: {
@@ -20,10 +22,6 @@ export default {
     }
   },
 
-  created() {
-    this.likeCount = this.count;
-  },
-
   data() {
     return {
       isLike: false,
@@ -31,8 +29,23 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState([
+      'user',
+    ]),
+  },
+
+  created() {
+    this.likeCount = this.count;
+  },
+
   methods: {
     giveLike() {
+      if (!user) {
+        this.message('请先登录')
+        return;
+      }
+
       this.isLike = !this.isLike;
       if (this.isLike) {
         this.likeCount++;

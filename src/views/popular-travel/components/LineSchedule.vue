@@ -1,65 +1,50 @@
 <template>
   <div class="line-schedule">
     <div class="header">
-      <h3 class="h3">线路日程</h3>
-      <span>(9天)</span>
-      <el-link
-        class="span"
-        :underline="false"
-        type="primary"
-        @click="viewAll"
-        >{{ textAll }}</el-link
-      >
+      <h3 class="h3">旅途统计</h3>
+      <!-- <span>({{dayTotal}}天)</span> -->
+      <!-- <el-link class="span" :underline="false" type="primary" @click="viewAll">{{ textAll }}</el-link> -->
     </div>
 
     <div class="body">
       <h4 class="num">
-        <p class="p"><span></span>69KM</p>
+        <p class="p">统计</p>
       </h4>
 
       <div v-show="!showAll">
         <ul class="summary">
-          <li class="item">
+          <li class="item" title="景点">
             <div class="box">
               <i class="iconfont icon-scenic-spot"></i>
             </div>
-            <span>6</span>
+            <span>{{scenicCount}}</span>
           </li>
-          <li class="item">
+          <li class="item" title="餐厅">
             <div class="box">
               <i class="iconfont icon-dining-room"></i>
             </div>
-            <span>4餐厅</span>
+            <span>{{diningCount}}</span>
           </li>
-          <li class="item">
+          <li class="item" title="住宿">
             <div class="box">
               <i class="iconfont icon-hotel"></i>
             </div>
-            <span>1住宿</span>
+            <span>{{hotelCount}}</span>
           </li>
-          <li class="item">
+          <li class="item" title="购物">
             <div class="box">
               <i class="iconfont icon-shopping"></i>
             </div>
-            <span>10购物</span>
+            <span>{{shoppingCount}}</span>
           </li>
         </ul>
-
-        <div class="info">
-          <span>途径：</span>
-          <span>阳朔</span>
-          <span class="dot"></span>
-          <span>全州</span>
-          <span class="dot"></span>
-          <span>兴安</span>
-        </div>
       </div>
 
       <div v-show="showAll" class="line-all">
         <div class="day" v-for="(item, index) in 3" :key="index">
           <div class="date-container">
             <span class="date">2020.01.26</span>
-            <span> 第1天</span>
+            <span>第1天</span>
           </div>
           <ul>
             <li class="line-item">
@@ -84,20 +69,54 @@
 
 <script>
 export default {
-  data () {
+  props: {
+    lists: Array,
+  },
+
+  data() {
     return {
-      showAll: true
+      showAll: false,
+      // dayTotal: 0,
+      scenicCount: 0,
+      diningCount: 0,
+      hotelCount: 0,
+      shoppingCount: 0,
     }
   },
 
-  computed: {
-    textAll () {
-      return this.showAll ? '收起' : '查看全部'
-    }
+  // computed: {
+  //   textAll() {
+  //     return this.showAll ? '收起' : '查看全部'
+  //   }
+  // },
+
+  watch: {
+    lists(newVal) {
+      newVal.forEach(item => {
+        item.sections.forEach(sec => {
+          switch (sec.addressType) {
+            case 1:
+              this.scenicCount++;
+              break;
+            case 2:
+              this.diningCount++;
+              break;
+            case 3:
+              this.hotelCount++;
+              break;
+            case 4:
+              this.shoppingCount++;
+              break;
+          }
+        })
+      })
+
+      // this.dayTotal = newVal.length
+    },
   },
 
   methods: {
-    viewAll () {
+    viewAll() {
       this.showAll = !this.showAll
     }
   }

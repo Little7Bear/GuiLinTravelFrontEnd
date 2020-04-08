@@ -3,26 +3,28 @@
     <!-- 头部 -->
     <div class="header">
       <!-- 头像 -->
-      <el-avatar :size="80" :src="circleUrl"></el-avatar>
+      <el-avatar :size="80" :src="avatar_url"></el-avatar>
+
       <!-- 标题 -->
       <div class="info">
-        <h2 class="title" style>非典型性拉萨游</h2>
-        <span>巴尼拉斯科技</span>
+        <h2 class="title" style>{{name}}</h2>
+        <span>{{username}}</span>
         <el-divider class="el-divider-title" direction="vertical"></el-divider>
-        <span>2020.01.26</span>
+        <span>{{date}}</span>
         <el-divider class="el-divider-title" direction="vertical"></el-divider>
-        <span>9天</span>
-        <el-divider class="el-divider-title" direction="vertical"></el-divider>
-        <span>浏览3529次</span>
+        <span>{{dayTotal}}天</span>
       </div>
-      <!-- 点赞、收藏 -->
+
+      <!-- 点赞、评论、收藏 -->
       <div :class="['count', { fixed: isFixed }]">
-        <LikeCount />
+        <LikeCount :count="likeCount" />
         <el-divider direction="vertical"></el-divider>
+
         <i class="iconfont icon-comment"></i>
-        <span>0</span>
+        <span>{{commentCount}}</span>
         <el-divider direction="vertical"></el-divider>
-        <LikeCount :iconName="['icon-collected', 'icon-collect']" />
+
+        <LikeCount :iconName="['icon-collected', 'icon-collect']" :count="collectCount" />
       </div>
     </div>
 
@@ -30,10 +32,24 @@
     <div class="body" id="content">
       <div class="body-content">
         <!-- 楼层效果 -->
-        <NavFloor />
+        <NavFloor :lists="floorData" />
 
-        <!-- 线路日程 -->
-        <LineSchedule />
+        <div>
+          <!-- 操作 -->
+          <div class="opreate">
+            <el-button type="primary">编辑游记</el-button>
+            <el-popconfirm
+              title="确定删除此用户吗？"
+              icon="el-icon-info"
+              iconColor="red"
+              @onConfirm="onDelete"
+            >
+              <el-button slot="reference" type="danger">删除游记</el-button>
+            </el-popconfirm>
+          </div>
+          <!-- 线路日程 -->
+          <LineSchedule :lists="scheduleData" />
+        </div>
       </div>
     </div>
     <div class="body-bottom">
@@ -42,7 +58,7 @@
       </h4>
       <div class="comment-text-container">
         <div class="avatar-row">
-          <el-avatar :size="30" :src="circleUrl"></el-avatar>
+          <el-avatar :size="30" :src="avatar_url"></el-avatar>
           <span class="user-name">Mr.D_dfbf0：</span>
           <span class="comment-text">加油</span>
         </div>
@@ -56,7 +72,7 @@
       <el-divider></el-divider>
       <div class="comment-text-container">
         <div class="avatar-row">
-          <el-avatar :size="30" :src="circleUrl"></el-avatar>
+          <el-avatar :size="30" :src="avatar_url"></el-avatar>
           <span class="user-name">Mr.D_dfbf0：</span>
           <span class="comment-text">加油</span>
         </div>
@@ -79,6 +95,8 @@
 import LikeCount from './components/LikeCount'
 import NavFloor from './components/NavFloor'
 import LineSchedule from './components/LineSchedule'
+import request from './request';
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -90,22 +108,29 @@ export default {
   data() {
     return {
       scrollTop: 0,
-      circleUrl:
-        'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      // 时间线
-      activities: [{
-        content: '活动按期开始',
-        timestamp: '2018-04-15'
-      }, {
-        content: '通过审核',
-        timestamp: '2018-04-13'
-      }, {
-        content: '创建成功',
-        timestamp: '2018-04-11'
-      }],
       isFixed: false,
+      avatar_url: '',
+      name: '',
+      username: '',
+      date: '',
+      dayTotal: 0,
+      likeCount: 0,
+      commentCount: 0,
+      collectCount: 0,
+      floorData: null,
+      scheduleData: null,
       comment: '',
     }
+  },
+
+  computed: {
+    ...mapState([
+      'user',
+    ]),
+  },
+
+  created() {
+    this._queryData()
   },
 
   mounted() {
@@ -118,7 +143,35 @@ export default {
     })
   },
 
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+
   methods: {
+    _queryData() {
+      request.findByID(this.$route.query.articleID)
+        .then(res => {
+          let data = res.data
+          this.avatar_url = data.avatar_url
+          this.name = data.name
+          this.username = data.username
+          this.date = data.date
+          this.dayTotal = data.dayTotal
+          this.likeCount = data.likeCount
+          this.commentCount = data.commentCount
+          this.collectCount = data.collectCount
+          this.floorData = data.days
+          this.scheduleData = data.days
+        })
+    },
+
+    onDelete() {
+      request.delete(this.$route.query.articleID)
+        .then(res => {
+          this.$router.replace({ name: 'MyHome' })
+        })
+    },
+
     // 显示点赞
     handleScrollTop() {
       this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
@@ -132,10 +185,6 @@ export default {
       }
     }
   },
-
-  destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
 }
 </script>
 
@@ -200,6 +249,15 @@ export default {
 
 .body-content {
   display: flex;
+
+  .opreate {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .el-button {
+      margin-right: 20px;
+    }
+  }
 }
 
 .body-bottom {

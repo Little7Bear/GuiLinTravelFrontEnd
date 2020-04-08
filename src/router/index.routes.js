@@ -24,7 +24,7 @@ export default {
     },
     {
       path: '/detail',
-      name: 'scenic-detail',
+      name: 'ScenicDetail',
       component: () => import('@/views/scenic/ScenicDetail'),
     },
     {
