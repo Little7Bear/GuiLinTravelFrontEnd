@@ -1,26 +1,26 @@
 <template>
   <div class="travel-card" @click="goToArticle">
     <el-card shadow="hover">
-      <ImageCover :src="cover" class="image" />
+      <img :src="cover" class="image" alt="图片" />
 
       <div class="card-footer">
         <div class="footer-left">
           <h4 class="card-title">{{title}}</h4>
 
           <div class="user-container">
-            <el-avatar :size="25" :src="avatar"></el-avatar>
-            <span class="user-name">{{name}}</span>
+            <el-avatar :size="25" :src="avatar_url"></el-avatar>
+            <span class="user-name">{{username}}</span>
             <el-divider direction="vertical"></el-divider>
             <span class="date">{{date}}</span>
             <el-divider direction="vertical"></el-divider>
-            <span class="date-count">{{dateCount}}天</span>
+            <span class="date-count">{{dayTotal}}天</span>
           </div>
         </div>
 
         <div class="footer-right">
           <div class="icon-container">
             <i class="iconfont icon-loved"></i>
-            <span class="icon-count">{{loveCount}}</span>
+            <span class="icon-count">{{likeCount}}</span>
           </div>
 
           <div class="icon-container">
@@ -35,25 +35,49 @@
 
 <script>
 export default {
-  data () {
+  props: {
+    id: {
+      type: String,
+    },
+    title: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
+    date: {
+      type: String,
+    },
+    dayTotal: {
+      type: Number,
+    },
+    cover: {
+      type: String,
+    },
+    avatar_url: {
+      type: String,
+    },
+    likeCount: {
+      type: Number,
+      default: 0
+    },
+    commentCount: {
+      type: Number,
+      default: 0
+    },
+  },
+
+  data() {
     return {
-      title: '光脚走缅甸，见证虔诚的佛心虔诚的佛心',
-      name: '团子E菲',
-      date: '2020-03-02',
-      dateCount: 9,
-      cover: 'http://photos.breadtrip.com/photo_2020_02_01_27aabfecb6aa5c2bb0781d5f144b288c.jpg?imageView/2/w/960/q/85',
-      avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      loveCount: 9999,
-      commentCount: 536,
-      id: '111'
+
     }
   },
 
   methods: {
-    goToArticle () {
+    goToArticle() {
       this.$router.push({
         name: 'Article',
-        params: {
+        query: {
           articleID: this.id
         }
       })
@@ -66,14 +90,8 @@ export default {
 <style lang='scss' scoped>
 /deep/ {
   .el-card {
-    // margin-right: 10px;
-
     &:hover {
       cursor: pointer;
-
-      .img-cover {
-        display: block;
-      }
     }
   }
 
@@ -85,6 +103,7 @@ export default {
 .image {
   width: 100%;
   height: 168px;
+  object-fit: cover;
 }
 
 // 下方文字

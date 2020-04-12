@@ -122,7 +122,7 @@
 <script>
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
-import note from './note'
+import note from '@/api/note'
 
 export default {
   data() {

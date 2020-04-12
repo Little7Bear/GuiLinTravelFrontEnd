@@ -1,5 +1,5 @@
 <template>
-  <div class="single-article">
+  <div class="single-article" v-loading="loading">
     <!-- 头部 -->
     <div class="header">
       <!-- 头像 -->
@@ -26,6 +26,14 @@
 
         <LikeCount :iconName="['icon-collected', 'icon-collect']" :count="collectCount" />
       </div>
+
+      <el-button
+        style="margin-left:auto;"
+        type="primary"
+        round
+        icon="el-icon-back"
+        @click="$router.back()"
+      >返回</el-button>
     </div>
 
     <!-- 内容 -->
@@ -36,7 +44,7 @@
 
         <div>
           <!-- 操作 -->
-          <div class="opreate">
+          <div class="opreate" v-if="hasPermission">
             <el-button type="primary" @click="editNote">编辑游记</el-button>
             <el-popconfirm
               title="确定删除这篇游记吗？"
@@ -95,7 +103,7 @@
 import LikeCount from './components/LikeCount'
 import NavFloor from './components/NavFloor'
 import LineSchedule from './components/LineSchedule'
-import note from '../my-home/note';
+import note from '@/api/note';
 import { mapState } from 'vuex'
 
 export default {
@@ -120,6 +128,8 @@ export default {
       floorData: null,
       scheduleData: null,
       comment: '',
+      loading: false,
+      userID: '',
     }
   },
 
@@ -127,10 +137,21 @@ export default {
     ...mapState([
       'user',
     ]),
+
+    hasPermission() {
+      if (this.user && this.user.id === this.userID) {
+        return true
+      } else {
+        return false
+      }
+    },
   },
 
   created() {
-    this._queryData()
+    let id = this.$route.query.articleID
+    if (id) {
+      this._queryData(id)
+    }
   },
 
   mounted() {
@@ -148,9 +169,11 @@ export default {
   },
 
   methods: {
-    _queryData() {
-      note.findByID(this.$route.query.articleID)
+    _queryData(id) {
+      this.loading = true
+      note.findByID(id)
         .then(res => {
+          this.loading = false
           let data = res.data
           this.avatar_url = data.avatar_url
           this.name = data.name
@@ -162,6 +185,10 @@ export default {
           this.collectCount = data.collectCount
           this.floorData = data.days
           this.scheduleData = data.days
+          this.userID = data.userID
+        })
+        .catch(err => {
+          this.loading = false
         })
     },
 
@@ -182,13 +209,14 @@ export default {
     // 显示点赞
     handleScrollTop() {
       this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-
-      const offsetTop = document.querySelector('#content').offsetTop
-
-      if (this.scrollTop > offsetTop) {
-        this.isFixed = true
-      } else {
-        this.isFixed = false
+      let dom = document.querySelector('#content')
+      if (dom) {
+        const offsetTop = dom.offsetTop
+        if (this.scrollTop > offsetTop) {
+          this.isFixed = true
+        } else {
+          this.isFixed = false
+        }
       }
     }
   },

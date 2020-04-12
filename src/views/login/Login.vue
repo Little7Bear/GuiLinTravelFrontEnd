@@ -233,18 +233,23 @@ export default {
 
 <style lang="scss" scoped>
 .login {
+  height: 100%;
+  background: #fff;
+  padding-top: 50px;
+
   .logo-container {
     .logo {
       display: block;
-      margin: 20px auto;
+      margin: 0 auto;
       width: 300px;
+      height: 73px;
     }
   }
 
   .box-container {
     width: 500px;
     border: 1px solid #e5e5e5;
-    margin: 0 auto;
+    margin: 20px auto;
 
     .header {
       display: flex;

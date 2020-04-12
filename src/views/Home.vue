@@ -93,15 +93,15 @@ export default {
     }
   },
 
-  created() {
-    this._initState()
-  },
-
   computed: {
     isLogin() {
       return this.$store.state.token ? true : false
     },
 
+  },
+
+  created() {
+    this._initState()
   },
 
   methods: {
@@ -192,6 +192,8 @@ $color-background: rgb(84, 92, 100);
 }
 
 .home {
+  width: 100%;
+  height: 100%;
   background: #fff;
 
   // 导航条
@@ -217,13 +219,13 @@ $color-background: rgb(84, 92, 100);
     width: 60px;
     color: #fff;
   }
+}
 
-  // body
-  .main {
-    @include body-width;
-    padding-top: 20px;
-    margin-bottom: 30px;
-  }
+// body
+.main {
+  @include body-width;
+  padding-top: 20px;
+  margin-bottom: 30px;
 }
 
 //footer

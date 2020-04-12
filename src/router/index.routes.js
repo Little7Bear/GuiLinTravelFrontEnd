@@ -13,7 +13,12 @@ export default {
       component: PopularTravel
     },
     {
-      path: '/index/article',
+      path: '/aaa',
+      name: 'AAA',
+      component: () => import('@/views/popular-travel/aaa')
+    },
+    {
+      path: '/article',
       name: 'Article',
       component: () => import('@/views/popular-travel/SingleArticle')
     },

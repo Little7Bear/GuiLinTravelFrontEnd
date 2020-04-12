@@ -5,6 +5,12 @@ class Note {
     return http.post('/notes', params)
   }
 
+  findAll(params) {
+    return http.get('/notes/all', {
+      params: params
+    })
+  }
+
   findByUserID(userID) {
     return http.get(`/notes/user/${userID}`)
   }

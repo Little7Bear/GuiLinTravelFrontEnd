@@ -1,5 +1,5 @@
 <template>
-  <div class="my-home">
+  <div class="my-home" v-loading="loading">
     <div class="main">
       <!-- 个人信息 -->
       <div class="home-header">
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import note from './note';
+import note from '@/api/note';
 import { mapState } from 'vuex'
 
 export default {
@@ -96,6 +96,7 @@ export default {
       receiveLike: 0,
       receiveCollect: 0,
       notes: [],
+      loading: false,
     }
   },
 
@@ -115,9 +116,10 @@ export default {
         this.$message({ message: '请先登录', duration: 1000, showClose: true })
         return;
       }
-
+      this.loading = true
       note.findByUserID(this.user.id)
         .then(res => {
+          this.loading = false
           let data = res.data
           this.userName = data.username
           this.avatar_url = data.avatar_url
@@ -127,6 +129,9 @@ export default {
           this.collectCount = data.collectCount
           this.receiveLike = data.receiveLike
           this.receiveCollect = data.receiveCollect
+        })
+        .catch(err => {
+          this.loading = false
         })
     },
 
