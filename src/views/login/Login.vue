@@ -31,7 +31,6 @@
           </el-form-item>
 
           <el-form-item>
-            <el-link type="primary" class="forget" :underline="false">忘记密码?</el-link>
             <el-button class="btn" type="primary" @click="login('loginForm')">登录</el-button>
           </el-form-item>
         </el-form>

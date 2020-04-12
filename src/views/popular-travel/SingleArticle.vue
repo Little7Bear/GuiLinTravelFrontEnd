@@ -37,9 +37,9 @@
         <div>
           <!-- 操作 -->
           <div class="opreate">
-            <el-button type="primary">编辑游记</el-button>
+            <el-button type="primary" @click="editNote">编辑游记</el-button>
             <el-popconfirm
-              title="确定删除此用户吗？"
+              title="确定删除这篇游记吗？"
               icon="el-icon-info"
               iconColor="red"
               @onConfirm="onDelete"
@@ -95,7 +95,7 @@
 import LikeCount from './components/LikeCount'
 import NavFloor from './components/NavFloor'
 import LineSchedule from './components/LineSchedule'
-import request from './request';
+import note from '../my-home/note';
 import { mapState } from 'vuex'
 
 export default {
@@ -149,7 +149,7 @@ export default {
 
   methods: {
     _queryData() {
-      request.findByID(this.$route.query.articleID)
+      note.findByID(this.$route.query.articleID)
         .then(res => {
           let data = res.data
           this.avatar_url = data.avatar_url
@@ -166,10 +166,17 @@ export default {
     },
 
     onDelete() {
-      request.delete(this.$route.query.articleID)
+      note.delete(this.$route.query.articleID)
         .then(res => {
           this.$router.replace({ name: 'MyHome' })
         })
+    },
+
+    editNote() {
+      this.$router.push({
+        name: 'CreateTravel',
+        query: { id: this.$route.query.articleID }
+      })
     },
 
     // 显示点赞

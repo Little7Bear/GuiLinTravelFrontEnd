@@ -14,7 +14,7 @@
         value-format="yyyy-MM-dd"
       ></el-date-picker>
 
-      <el-button type="primary" :disabled="isDisabled" @click="submit">生成游记</el-button>
+      <el-button type="primary" :disabled="isDisabled" @click="submit">{{edit?'修改游记':'生成游记'}}</el-button>
 
       <el-button type="primary" round icon="el-icon-back" @click="$router.back()">返回</el-button>
     </div>
@@ -122,11 +122,12 @@
 <script>
 import { mapState } from 'vuex'
 import dayjs from 'dayjs'
-import request from './request'
+import note from './note'
 
 export default {
   data() {
     return {
+      edit: false,//编辑状态
       name: '', //游记名称
       // createDisabled: true, //能否生成游记
       //总数据
@@ -154,24 +155,6 @@ export default {
         {
           value: 4,
           label: '购物'
-        }
-      ],
-      areas: [
-        {
-          value: 1,
-          label: '桂林市区'
-        },
-        {
-          value: 2,
-          label: '阳朔'
-        },
-        {
-          value: 3,
-          label: '全州'
-        },
-        {
-          value: 4,
-          label: '兴安'
         }
       ],
     }
@@ -231,6 +214,14 @@ export default {
       }
     },
 
+  },
+
+  created() {
+    // 编辑游记状态
+    let id = this.$route.query.id
+    if (id) {
+      this._queryData(id)
+    }
   },
 
   methods: {
@@ -309,17 +300,43 @@ export default {
     },
 
     submit() {
-      let params = {
-        name: this.name,
-        userID: this.user.id,
-        days: this.days,
+      if (this.edit) {
+        // 修改
+        let params = {
+          name: this.name,
+          days: this.days,
+        }
+        note.update(this.$route.query.id, params)
+          .then(res => {
+            let data = res.data
+            this.name = data.name
+            this.days = data.days
+            this.edit = true
+          })
+      } else {
+        // 新建
+        let params = {
+          name: this.name,
+          userID: this.user.id,
+          days: this.days,
+        }
+        note.create(params)
+          .then(res => {
+            this.$router.replace({ name: 'MyHome' })
+          })
       }
-      request.create(params)
-        .then(res => {
-          this.$router.replace({ name: 'MyHome' })
-        })
     },
 
+    _queryData(id) {
+      note.findByID(id)
+        .then(res => {
+          let data = res.data
+          this.name = data.name
+          this.days = data.days
+          this.currentDayIndex = 0
+          this.edit = true
+        })
+    },
   }
 }
 

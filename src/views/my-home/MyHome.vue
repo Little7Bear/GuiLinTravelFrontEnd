@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import request from './request';
+import note from './note';
 import { mapState } from 'vuex'
 
 export default {
@@ -116,7 +116,7 @@ export default {
         return;
       }
 
-      request.findByUserID(this.user.id)
+      note.findByUserID(this.user.id)
         .then(res => {
           let data = res.data
           this.userName = data.username
