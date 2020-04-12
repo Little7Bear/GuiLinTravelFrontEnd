@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       isLike: false,
-      likeCount: 0
+      likeCount: 0,
     };
   },
 
@@ -35,14 +35,19 @@ export default {
     ]),
   },
 
-  created() {
-    this.likeCount = this.count;
+  watch: {
+    count: {
+      immediate: true,
+      handler(value) {
+        this.likeCount = this.count
+      },
+    },
   },
 
   methods: {
     giveLike() {
-      if (!user) {
-        this.message('请先登录')
+      if (!this.user) {
+        this.$message('请先登录')
         return;
       }
 
@@ -52,6 +57,7 @@ export default {
       } else {
         this.likeCount--;
       }
+      this.$emit('change', this.likeCount)
     }
   }
 };
