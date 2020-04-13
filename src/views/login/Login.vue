@@ -92,7 +92,7 @@
 
 <script>
 import term from './term';
-import request from './request';
+import request from '@/api/user';
 
 export default {
   name: 'Login',

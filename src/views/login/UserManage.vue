@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import request from './request';
+import request from '@/api/user';
 
 export default {
   data() {

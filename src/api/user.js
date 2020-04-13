@@ -9,6 +9,12 @@ class User {
     return http.post('/users/login', params)
   }
 
+  verifyState(params) {
+    return http.get('/users/verify', {
+      params: params
+    })
+  }
+
   findById(id) {
     return http.get('/users/' + id)
   }
@@ -21,6 +27,10 @@ class User {
 
   update(id, params) {
     return http.patch('/users/' + id, params)
+  }
+
+  updateAmount(id, params) {
+    return http.patch('/users/amount/' + id, params)
   }
 
   updatePassword(id, params) {

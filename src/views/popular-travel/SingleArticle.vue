@@ -17,14 +17,14 @@
 
       <!-- 点赞、评论、收藏 -->
       <div :class="['count', { fixed: isFixed }]">
-        <LikeCount :count="likeCount" />
+        <LikeCount :count="likeCount" :ownerID="userID" :noteID="noteID" />
         <el-divider direction="vertical"></el-divider>
 
         <i class="iconfont icon-comment"></i>
         <span>{{commentCount}}</span>
         <el-divider direction="vertical"></el-divider>
 
-        <LikeCount :iconName="['icon-collected', 'icon-collect']" :count="collectCount" />
+        <LikeCount :type="1" :count="collectCount" :ownerID="userID" :noteID="noteID" />
       </div>
 
       <el-button
@@ -130,6 +130,7 @@ export default {
       comment: '',
       loading: false,
       userID: '',
+      noteID: '',
     }
   },
 
@@ -148,9 +149,9 @@ export default {
   },
 
   created() {
-    let id = this.$route.query.articleID
-    if (id) {
-      this._queryData(id)
+    this.noteID = this.$route.query.articleID
+    if (this.noteID) {
+      this._queryData(this.noteID)
     }
   },
 

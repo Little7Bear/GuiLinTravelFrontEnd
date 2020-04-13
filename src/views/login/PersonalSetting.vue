@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import request from './request'
+import request from '@/api/user'
 import { mapState } from 'vuex'
 
 export default {
