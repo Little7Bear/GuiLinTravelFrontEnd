@@ -312,6 +312,7 @@ export default {
             this.name = data.name
             this.days = data.days
             this.edit = true
+            this.$message.success('修改成功')
           })
       } else {
         // 新建

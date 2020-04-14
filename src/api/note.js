@@ -31,6 +31,18 @@ class Note {
     return http.patch('/notes/' + id, params)
   }
 
+  addComment(id, params) {
+    return http.patch('/notes/comments/' + id, params)
+  }
+
+  findComments(id) {
+    return http.get('/notes/comments/' + id)
+  }
+
+  deleteComment(id, params) {
+    return http.delete(`/notes/comments/${id}`)
+  }
+
 }
 
 export default new Note()

@@ -20,7 +20,7 @@
         <LikeCount :count="likeCount" :ownerID="userID" :noteID="noteID" />
         <el-divider direction="vertical"></el-divider>
 
-        <i class="iconfont icon-comment"></i>
+        <i class="iconfont icon-comment" @click="jumpComment"></i>
         <span>{{commentCount}}</span>
         <el-divider direction="vertical"></el-divider>
 
@@ -60,40 +60,44 @@
         </div>
       </div>
     </div>
+    <!-- 评论 -->
     <div class="body-bottom">
       <h4 class="comment-title-container">
-        <span class="comment-title">0</span>条评论
+        <span class="comment-title">{{comments.length}}</span>条评论
       </h4>
-      <div class="comment-text-container">
-        <div class="avatar-row">
-          <el-avatar :size="30" :src="avatar_url"></el-avatar>
-          <span class="user-name">Mr.D_dfbf0：</span>
-          <span class="comment-text">加油</span>
-        </div>
-        <div class="comment-tooltip">
-          <span class="comment-date">8分钟前</span>
+      <!-- 评论列表 -->
+      <ul>
+        <li class="comment-text-container" v-for="(comment, index) in comments" :key="index">
+          <div class="avatar-row">
+            <el-avatar :size="30" :src="comment.avatar_url"></el-avatar>
+            <span class="user-name">{{comment.username}}：</span>
+            <span class="comment-text">{{comment.text}}</span>
+          </div>
+          <div class="comment-tooltip">
+            <span class="comment-date">{{comment.date}}</span>
 
-          <el-link type="primary" :underline="false">删除</el-link>
-          <el-link type="primary" :underline="false">回复</el-link>
-        </div>
-      </div>
-      <el-divider></el-divider>
-      <div class="comment-text-container">
-        <div class="avatar-row">
-          <el-avatar :size="30" :src="avatar_url"></el-avatar>
-          <span class="user-name">Mr.D_dfbf0：</span>
-          <span class="comment-text">加油</span>
-        </div>
-        <div class="comment-tooltip">
-          <span class="comment-date">7分钟前</span>
-
-          <el-link type="primary" :underline="false">删除</el-link>
-          <el-link type="primary" :underline="false">回复</el-link>
-        </div>
-      </div>
+            <el-link
+              type="primary"
+              :underline="false"
+              v-if="comment.isSelf"
+              @click="delComment(comment.id)"
+            >删除</el-link>
+            <el-link type="primary" :underline="false" @click="reply(comment.username)">回复</el-link>
+          </div>
+        </li>
+      </ul>
+      <!-- 评论区 -->
       <div class="comment-input-container">
-        <el-input type="textarea" :rows="4" placeholder="请输入评论" v-model="comment"></el-input>
-        <el-button type="primary" size="mini">提交</el-button>
+        <el-input
+          ref="comment"
+          type="textarea"
+          :rows="5"
+          placeholder="请输入评论"
+          v-model="comment"
+          maxlength="500"
+          show-word-limit
+        ></el-input>
+        <el-button type="primary" size="mini" @click="onComment">提交</el-button>
       </div>
     </div>
   </div>
@@ -131,6 +135,17 @@ export default {
       loading: false,
       userID: '',
       noteID: '',
+      comments: [
+        // {
+        //   id:'',
+        //   avatar_url: '',
+        //   userId: '',
+        //   username: '雨夜',
+        //   text: '好骚哦',
+        //   date: '2020年4月14日22:33:59',
+        //   isSelf: false,
+        // }
+      ],//评论列表
     }
   },
 
@@ -152,6 +167,7 @@ export default {
     this.noteID = this.$route.query.articleID
     if (this.noteID) {
       this._queryData(this.noteID)
+      this._queryComments(this.noteID)
     }
   },
 
@@ -193,6 +209,22 @@ export default {
         })
     },
 
+    _queryComments(noteId) {
+      note.findComments(noteId)
+        .then(res => {
+          let lists = res.data
+          //转换数据格式
+          lists.forEach(list => {
+            if (list.userId === this.user.id) {
+              list.isSelf = true
+              return;
+            }
+            list.isSelf = false
+          });
+          this.comments = lists
+        })
+    },
+
     onDelete() {
       note.delete(this.$route.query.articleID)
         .then(res => {
@@ -219,7 +251,50 @@ export default {
           this.isFixed = false
         }
       }
-    }
+    },
+
+    jumpComment() {//跳转到评论
+      this.$refs.comment.focus();
+    },
+
+    onComment() { //评论
+      let text = this.comment.trim()
+      let param = {
+        userId: this.user.id,
+        text,
+        date: this.$dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      }
+
+      note.addComment(this.noteID, param)
+        .then(res => {
+          let lists = res.data
+          //转换数据格式
+          lists.forEach(list => {
+            if (list.userId === this.user.id) {
+              list.isSelf = true
+              return;
+            }
+            list.isSelf = false
+          });
+          this.comments = lists
+          this.comment = ''
+        })
+    },
+
+    reply(username) {//回复
+      this.comment = `回复${username}: `
+      this.$refs.comment.focus();
+    },
+
+    delComment(commentId) {
+      let param = {
+        commentId
+      }
+      note.addComment(this.noteID, param)
+        .then(res => {
+          this._queryComments()
+        })
+    },
   },
 }
 </script>
@@ -306,8 +381,6 @@ export default {
     margin-top: 18px;
     font-size: 18px;
     font-weight: normal;
-    padding-bottom: 8px;
-    border-bottom: 1px solid $border-color-base;
   }
 
   .comment-title {
@@ -318,8 +391,9 @@ export default {
   }
 
   .comment-text-container {
-    margin-top: 10px;
-    padding-left: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid $border-color-base;
   }
 
   .avatar-row {
