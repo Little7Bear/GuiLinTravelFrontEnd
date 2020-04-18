@@ -38,11 +38,6 @@ class Note {
   findComments(id) {
     return http.get('/notes/comments/' + id)
   }
-
-  deleteComment(id, params) {
-    return http.delete(`/notes/comments/${id}`)
-  }
-
 }
 
 export default new Note()

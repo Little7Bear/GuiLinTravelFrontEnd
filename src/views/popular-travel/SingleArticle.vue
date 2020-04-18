@@ -76,13 +76,16 @@
           <div class="comment-tooltip">
             <span class="comment-date">{{comment.date}}</span>
 
-            <el-link
-              type="primary"
-              :underline="false"
-              v-if="comment.isSelf"
-              @click="delComment(comment.id)"
-            >删除</el-link>
-            <el-link type="primary" :underline="false" @click="reply(comment.username)">回复</el-link>
+            <div class="comment-right">
+              <el-link
+                class="delete"
+                type="primary"
+                :underline="false"
+                v-if="comment.isSelf"
+                @click="delComment(comment.id)"
+              >删除</el-link>
+              <el-link type="primary" :underline="false" @click="reply(comment.username)">回复</el-link>
+            </div>
           </div>
         </li>
       </ul>
@@ -215,7 +218,7 @@ export default {
           let lists = res.data
           //转换数据格式
           lists.forEach(list => {
-            if (list.userId === this.user.id) {
+            if (list.userId === this.user.id || this.hasPermission) {
               list.isSelf = true
               return;
             }
@@ -257,11 +260,12 @@ export default {
       this.$refs.comment.focus();
     },
 
-    onComment() { //评论
+    onComment(e, commentId) { //评论
       let text = this.comment.trim()
       let param = {
-        userId: this.user.id,
         text,
+        commentId: commentId,
+        userId: this.user.id,
         date: this.$dayjs().format('YYYY-MM-DD HH:mm:ss'),
       }
 
@@ -270,7 +274,7 @@ export default {
           let lists = res.data
           //转换数据格式
           lists.forEach(list => {
-            if (list.userId === this.user.id) {
+            if (list.userId === this.user.id || this.hasPermission) {
               list.isSelf = true
               return;
             }
@@ -287,13 +291,7 @@ export default {
     },
 
     delComment(commentId) {
-      let param = {
-        commentId
-      }
-      note.addComment(this.noteID, param)
-        .then(res => {
-          this._queryComments()
-        })
+      this.onComment(null, commentId)
     },
   },
 }
@@ -409,10 +407,13 @@ export default {
 
   .comment-tooltip {
     display: flex;
+  }
 
-    .el-link:first-of-type {
-      margin-left: auto;
-      margin-right: 20px;
+  .comment-right {
+    margin-left: auto;
+
+    .delete {
+      margin-right: 10px;
     }
   }
 

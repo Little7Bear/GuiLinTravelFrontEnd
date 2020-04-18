@@ -27,6 +27,7 @@
             <el-menu-item index="/create-travel">创建游记</el-menu-item>
             <el-menu-item index="/user/personal">设置</el-menu-item>
             <el-menu-item v-permission="'0'" index="/user/manage">用户管理</el-menu-item>
+            <el-menu-item v-permission="'0'" index="/scenic/create">添加景点</el-menu-item>
             <el-menu-item @click="onExit">退出</el-menu-item>
           </el-submenu>
         </el-menu>
@@ -36,12 +37,12 @@
             <span class="header-text">登录</span>
           </router-link>
 
-          <el-input
+          <!-- <el-input
             class="el-input-search"
             placeholder="搜索游记标题/用户名"
             prefix-icon="el-icon-search"
             v-model="searchVal"
-          ></el-input>
+          ></el-input> -->
         </div>
       </div>
     </header>
@@ -76,7 +77,7 @@ export default {
 
   data() {
     return {
-      searchVal: '',
+      // searchVal: '',
       year: '',
       activeIndex: '/index',
       urls: [

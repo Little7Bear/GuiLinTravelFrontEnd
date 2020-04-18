@@ -13,11 +13,6 @@ export default {
       component: PopularTravel
     },
     {
-      path: '/aaa',
-      name: 'AAA',
-      component: () => import('@/views/popular-travel/aaa')
-    },
-    {
       path: '/article',
       name: 'Article',
       component: () => import('@/views/popular-travel/SingleArticle')
@@ -26,6 +21,11 @@ export default {
       path: '/scenic',
       name: 'Scenic',
       component: () => import('@/views/scenic/Scenic'),
+    },
+    {
+      path: '/scenic/create',
+      name: 'ScenicCreate',
+      component: () => import('@/views/scenic/ScenicCreate'),
     },
     {
       path: '/detail',
