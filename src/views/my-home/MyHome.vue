@@ -112,12 +112,8 @@ export default {
 
   methods: {
     _queryData() {
-      if (!this.user) {
-        this.$message({ message: '请先登录', duration: 1000, showClose: true })
-        return;
-      }
       this.loading = true
-      note.findByUserID(this.user.id)
+      note.findByUserID(this.user?.id)
         .then(res => {
           this.loading = false
           let data = res.data

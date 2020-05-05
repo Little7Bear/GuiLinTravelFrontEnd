@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import axios from 'axios'
 import router from '@/router'
-import store2 from 'store2';
+import store from 'store2';
 
 
 let axiosInstance = axios.create({
@@ -14,8 +14,8 @@ let axiosInstance = axios.create({
 // 拦截请求
 axiosInstance.interceptors.request.use(
   config => {
-    if (store2('token')) {
-      config.headers.Authorization = 'Bearer ' + store2('token');
+    if (store('token')) {
+      config.headers.Authorization = 'Bearer ' + store('token');
     }
 
     return config;
@@ -38,21 +38,11 @@ axiosInstance.interceptors.response.use(
   },
 
   error => {
-    const status = error.response.status;
+    const { status } = error.response;
 
     // 登录过期
     if (status === 401) {
-      store.commit({
-        type: 'setUser',
-        token: null,
-        user: null
-      })
-
-      Vue.prototype.$message({
-        message: '请登录',
-        type: 'warning'
-      });
-
+      store(false)
       router.replace({ name: 'Login' })
     }
 

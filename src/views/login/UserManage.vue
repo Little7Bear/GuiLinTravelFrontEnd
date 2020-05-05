@@ -8,12 +8,12 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-popconfirm
-            title="确定拉黑此用户吗？"
+            title="确定删除此用户吗？"
             icon="el-icon-info"
             iconColor="red"
             @onConfirm="onDelete(scope.row)"
           >
-            <el-button slot="reference" size="mini" type="danger">拉黑</el-button>
+            <el-button slot="reference" size="mini" type="danger">删除</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
