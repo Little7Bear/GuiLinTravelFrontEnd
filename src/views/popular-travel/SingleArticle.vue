@@ -77,13 +77,15 @@
             <span class="comment-date">{{comment.date}}</span>
 
             <div class="comment-right">
-              <el-link
-                class="delete"
-                type="primary"
-                :underline="false"
+              <el-popconfirm
+                title="确定删除此条评论吗？"
+                icon="el-icon-info"
+                iconColor="red"
                 v-if="comment.isSelf"
-                @click="delComment(comment.id)"
-              >删除</el-link>
+                @onConfirm="delComment(comment.id)"
+              >
+                <el-link slot="reference" class="delete" type="primary" :underline="false">删除</el-link>
+              </el-popconfirm>
               <el-link type="primary" :underline="false" @click="reply(comment.username)">回复</el-link>
             </div>
           </div>
@@ -107,11 +109,11 @@
 </template>
 
 <script>
-import LikeCount from './components/LikeCount'
-import NavFloor from './components/NavFloor'
-import LineSchedule from './components/LineSchedule'
-import note from '@/api/note';
-import { mapState } from 'vuex'
+import LikeCount from "./components/LikeCount";
+import NavFloor from "./components/NavFloor";
+import LineSchedule from "./components/LineSchedule";
+import note from "@/api/note";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -124,20 +126,20 @@ export default {
     return {
       scrollTop: 0,
       isFixed: false,
-      avatar_url: '',
-      name: '',
-      username: '',
-      date: '',
+      avatar_url: "",
+      name: "",
+      username: "",
+      date: "",
       dayTotal: 0,
       likeCount: 0,
       commentCount: 0,
       collectCount: 0,
       floorData: null,
       scheduleData: null,
-      comment: '',
+      comment: "",
       loading: false,
-      userID: '',
-      noteID: '',
+      userID: "",
+      noteID: "",
       comments: [
         // {
         //   id:'',
@@ -148,153 +150,152 @@ export default {
         //   date: '2020年4月14日22:33:59',
         //   isSelf: false,
         // }
-      ],//评论列表
-    }
+      ] //评论列表
+    };
   },
 
   computed: {
-    ...mapState([
-      'user',
-    ]),
+    ...mapState(["user"]),
 
     hasPermission() {
       if (this.user && this.user.id === this.userID) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
-    },
+    }
   },
 
   created() {
-    this.noteID = this.$route.query.articleID
+    this.noteID = this.$route.query.articleID;
     if (this.noteID) {
-      this._queryData(this.noteID)
-      this._queryComments(this.noteID)
+      this._queryData(this.noteID);
+      this._queryComments(this.noteID);
     }
   },
 
   mounted() {
-    this.$nextTick(function () {
+    this.$nextTick(function() {
       // 滑动时显示点赞栏
-      window.addEventListener(
-        'scroll',
-        this.handleScrollTop
-      )
-    })
+      window.addEventListener("scroll", this.handleScrollTop);
+    });
   },
 
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.removeEventListener("scroll", this.handleScroll);
   },
 
   methods: {
     _queryData(id) {
-      this.loading = true
-      note.findByID(id)
+      this.loading = true;
+      note
+        .findByID(id)
         .then(res => {
-          this.loading = false
-          let data = res.data
-          this.avatar_url = data.avatar_url
-          this.name = data.name
-          this.username = data.username
-          this.date = data.date
-          this.dayTotal = data.dayTotal
-          this.likeCount = data.likeCount
-          this.commentCount = data.commentCount
-          this.collectCount = data.collectCount
-          this.floorData = data.days
-          this.scheduleData = data.days
-          this.userID = data.userID
+          this.loading = false;
+          let data = res.data;
+          this.avatar_url = data.avatar_url;
+          this.name = data.name;
+          this.username = data.username;
+          this.date = data.date;
+          this.dayTotal = data.dayTotal;
+          this.likeCount = data.likeCount;
+          this.commentCount = data.commentCount;
+          this.collectCount = data.collectCount;
+          this.floorData = data.days;
+          this.scheduleData = data.days;
+          this.userID = data.userID;
         })
         .catch(err => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
 
     _queryComments(noteId) {
-      note.findComments(noteId)
-        .then(res => {
-          let lists = res.data
-          //转换数据格式
-          lists.forEach(list => {
-            if (list.userId === this.user.id || this.hasPermission) {
-              list.isSelf = true
-              return;
-            }
-            list.isSelf = false
-          });
-          this.comments = lists
-        })
+      note.findComments(noteId).then(res => {
+        let lists = res.data;
+        //转换数据格式
+        lists.forEach(list => {
+          if (list.userId === this.user.id || this.hasPermission) {
+            list.isSelf = true;
+            return;
+          }
+          list.isSelf = false;
+        });
+        this.comments = lists;
+      });
     },
 
     onDelete() {
-      note.delete(this.$route.query.articleID)
-        .then(res => {
-          this.$router.replace({ name: 'MyHome' })
-        })
+      note.delete(this.$route.query.articleID).then(res => {
+        this.$router.replace({ name: "MyHome" });
+      });
     },
 
     editNote() {
       this.$router.push({
-        name: 'CreateTravel',
+        name: "CreateTravel",
         query: { id: this.$route.query.articleID }
-      })
+      });
     },
 
     // 显示点赞
     handleScrollTop() {
-      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      let dom = document.querySelector('#content')
+      this.scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      let dom = document.querySelector("#content");
       if (dom) {
-        const offsetTop = dom.offsetTop
+        const offsetTop = dom.offsetTop;
         if (this.scrollTop > offsetTop) {
-          this.isFixed = true
+          this.isFixed = true;
         } else {
-          this.isFixed = false
+          this.isFixed = false;
         }
       }
     },
 
-    jumpComment() {//跳转到评论
+    jumpComment() {
+      //跳转到评论
       this.$refs.comment.focus();
     },
 
-    onComment(e, commentId) { //评论
-      let text = this.comment.trim()
+    onComment(e, commentId) {
+      //评论
+      let text = this.comment.trim();
       let param = {
         text,
         commentId: commentId,
         userId: this.user.id,
-        date: this.$dayjs().format('YYYY-MM-DD HH:mm:ss'),
-      }
+        date: this.$dayjs().format("YYYY-MM-DD HH:mm:ss")
+      };
 
-      note.addComment(this.noteID, param)
-        .then(res => {
-          let lists = res.data
-          //转换数据格式
-          lists.forEach(list => {
-            if (list.userId === this.user.id || this.hasPermission) {
-              list.isSelf = true
-              return;
-            }
-            list.isSelf = false
-          });
-          this.comments = lists
-          this.comment = ''
-        })
+      note.addComment(this.noteID, param).then(res => {
+        let lists = res.data;
+        //转换数据格式
+        lists.forEach(list => {
+          if (list.userId === this.user.id || this.hasPermission) {
+            list.isSelf = true;
+            return;
+          }
+          list.isSelf = false;
+        });
+        this.comments = lists;
+        this.comment = "";
+      });
     },
 
-    reply(username) {//回复
-      this.comment = `回复${username}: `
+    reply(username) {
+      //回复
+      this.comment = `回复${username}: `;
       this.$refs.comment.focus();
     },
 
     delComment(commentId) {
-      this.onComment(null, commentId)
-    },
-  },
-}
+      this.onComment(null, commentId);
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
